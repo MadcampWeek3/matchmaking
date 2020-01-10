@@ -48,16 +48,16 @@ public class SignActivity extends Activity {
         signCompButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(signId.getText() == null){
-                    Toast.makeText(getApplicationContext(),"ID를 입력하세요", Toast.LENGTH_SHORT).show();
+                if(signId.getText().toString().length() == 0){
+                    Toast.makeText(getApplicationContext(),"아이디를 입력하세요", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                else if(signPw.getText() == null){
-                    Toast.makeText(getApplicationContext(),"PassWord를 입력하세요", Toast.LENGTH_SHORT).show();
+                else if(signPw.getText().toString().length() == 0){
+                    Toast.makeText(getApplicationContext(),"패스워드를 입력하세요", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                else if(signNic.getText() == null){
-                    Toast.makeText(getApplicationContext(),"NickName을 입력하세요", Toast.LENGTH_SHORT).show();
+                else if(signNic.getText().toString().length() == 0){
+                    Toast.makeText(getApplicationContext(),"닉네임을 입력하세요", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 newUser = new User(signId.getText().toString(), signPw.getText().toString(), signNic.getText().toString(), signTier.getSelectedItem().toString(), signPosi.getSelectedItem().toString(), signVoic.getSelectedItem().toString());

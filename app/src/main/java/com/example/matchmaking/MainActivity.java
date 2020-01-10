@@ -38,11 +38,11 @@ public class MainActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(loginId.getText() == null){
+                if(loginId.getText().toString().length() == 0){
                     Toast.makeText(getApplicationContext(),"아이디 입력",Toast.LENGTH_SHORT).show();
                     return;
                 }
-                else (loginPw.getText() == null){
+                else if(loginPw.getText().toString().length() == 0){
                     Toast.makeText(getApplicationContext(),"비밀번호 입력",Toast.LENGTH_SHORT).show();
                     return;
                 }
