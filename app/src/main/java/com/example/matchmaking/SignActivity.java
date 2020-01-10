@@ -30,6 +30,7 @@ public class SignActivity extends Activity {
     Spinner signTier;
     Spinner signPosi;
     Spinner signVoic;
+    EditText signAboutMe;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,6 +43,7 @@ public class SignActivity extends Activity {
         signTier = (Spinner)findViewById(R.id.signTier);
         signPosi = (Spinner) findViewById(R.id.signPosi);
         signVoic = (Spinner) findViewById(R.id.signVoic);
+        signAboutMe = (EditText) findViewById(R.id.signAboutMe);
 
         Button signCompButton = (Button)findViewById(R.id.signComplButton);
 
@@ -60,7 +62,7 @@ public class SignActivity extends Activity {
                     Toast.makeText(getApplicationContext(),"닉네임을 입력하세요", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                newUser = new User(signId.getText().toString(), signPw.getText().toString(), signNic.getText().toString(), signTier.getSelectedItem().toString(), signPosi.getSelectedItem().toString(), signVoic.getSelectedItem().toString());
+                newUser = new User(signId.getText().toString(), signPw.getText().toString(), signNic.getText().toString(), signTier.getSelectedItem().toString(), signPosi.getSelectedItem().toString(), signVoic.getSelectedItem().toString(), signAboutMe.getText().toString());
 
                 //server에 회원가입 요청
                 retrofit = new Retrofit.Builder().baseUrl(retrofitInterface.API_URL).addConverterFactory(GsonConverterFactory.create()).build();

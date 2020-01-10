@@ -11,14 +11,16 @@ public class User {
     private String hope_tendency;
     private int hope_num;
     private String hope_voice;
+    private String aboutMe;
 
-    public User(String id, String password, String nickname, String tier, String position, String voice) {
+    public User(String id, String password, String nickname, String tier, String position, String voice, String aboutMe) {
         this.id = id;
         this.password = password;
         this.nickname = nickname;
         this.tier = tier;
         this.position = position;
         this.voice = voice;
+        this.aboutMe = aboutMe;
         this.userEval = new Evaluation();
     }
 
@@ -31,7 +33,8 @@ public class User {
     public Evaluation getHonor() { return userEval; }
     public String getHope_tendency() { return hope_tendency; }
     public int getHope_num() { return hope_num; }
-    public String isHope_voice() { return hope_voice; }
+    public String getHope_voice() { return hope_voice; }
+    public String getAboutMe() { return aboutMe; }
 
     public void setId(String id) { this.id = id; }
     public void setPassword(String password) { this.password = password; }
@@ -43,4 +46,5 @@ public class User {
     public void setHope_tendency(String hope_tendency) { this.hope_tendency = hope_tendency; }
     public void setHope_num(int hope_num) { this.hope_num = hope_num; }
     public void setHope_voice(String hope_voice) { this.hope_voice = hope_voice; }
+    public void setAboutMe(String aboutMe) { this.aboutMe = aboutMe; }
 }

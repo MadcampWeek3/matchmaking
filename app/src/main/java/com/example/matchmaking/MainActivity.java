@@ -39,11 +39,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(loginId.getText().toString().length() == 0){
-                    Toast.makeText(getApplicationContext(),"아이디 입력",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"아이디를 입력하세요",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 else if(loginPw.getText().toString().length() == 0){
-                    Toast.makeText(getApplicationContext(),"비밀번호 입력",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"비밀번호를 입력하세요",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 //server에 id/pw 보내고 확인받기
