@@ -1,15 +1,19 @@
 package com.example.matchmaking;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.renderscript.ScriptGroup;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,6 +25,8 @@ public class SignActivity extends Activity {
 
     Retrofit retrofit;
     RetrofitInterface retrofitInterface;
+
+    ConstraintLayout constraintLayout;
 
     private User newUser = null;
 
@@ -36,6 +42,19 @@ public class SignActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign);
+
+        //바탕 클릭시 키보드 내리기
+        constraintLayout = (ConstraintLayout)findViewById(R.id.signConst);
+        constraintLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(signId.getWindowToken(), 0);
+                imm.hideSoftInputFromWindow(signPw.getWindowToken(),0);
+                imm.hideSoftInputFromWindow(signNic.getWindowToken(), 0);
+                imm.hideSoftInputFromWindow(signAboutMe.getWindowToken(),0);
+            }
+        });
 
         signId = (EditText)findViewById(R.id.signId);
         signPw = (EditText)findViewById(R.id.signPw);

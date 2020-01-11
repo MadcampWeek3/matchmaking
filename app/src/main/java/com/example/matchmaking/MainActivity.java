@@ -1,11 +1,14 @@
 package com.example.matchmaking;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -24,10 +27,23 @@ public class MainActivity extends AppCompatActivity {
     Retrofit retrofit;
     RetrofitInterface retrofitInterface;
 
+    ConstraintLayout constraintLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //바탕 클릭시 키보드 내리기
+        constraintLayout = (ConstraintLayout)findViewById(R.id.loginConst);
+        constraintLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(loginId.getWindowToken(), 0);
+                imm.hideSoftInputFromWindow(loginPw.getWindowToken(),0);
+            }
+        });
 
         loginId = (EditText)findViewById(R.id.loginId);
         loginPw = (EditText)findViewById(R.id.loginPw);
@@ -82,5 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
     }
 }
