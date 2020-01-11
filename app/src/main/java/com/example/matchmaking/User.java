@@ -1,5 +1,7 @@
 package com.example.matchmaking;
 
+import java.util.List;
+
 public class User {
     private String id;
     private String password;
@@ -10,6 +12,7 @@ public class User {
     private Evaluation userEval;
     private String hope_tendency;
     private int hope_num;
+    private List<String> hope_position;
     private String hope_voice;
     private String aboutMe;
 
@@ -30,11 +33,13 @@ public class User {
     public String getTier() { return tier; }
     public String getPosition() { return position; }
     public String getVoice() { return voice; }
-    public Evaluation getHonor() { return userEval; }
+    public Evaluation getUserEval() { return userEval; }
     public String getHope_tendency() { return hope_tendency; }
     public int getHope_num() { return hope_num; }
     public String getHope_voice() { return hope_voice; }
     public String getAboutMe() { return aboutMe; }
+    public List<String> getHope_position() { return hope_position; }
+
 
     public void setId(String id) { this.id = id; }
     public void setPassword(String password) { this.password = password; }
@@ -42,9 +47,10 @@ public class User {
     public void setTier(String tier) { this.tier = tier; }
     public void setPosition(String position) { this.position = position; }
     public void setVoice(String voice) { this.voice = voice; }
-    public void setUserEval(String honor) { this.userEval = userEval; }
+    public void setUserEval(Evaluation userEval) { this.userEval = userEval; }
     public void setHope_tendency(String hope_tendency) { this.hope_tendency = hope_tendency; }
     public void setHope_num(int hope_num) { this.hope_num = hope_num; }
     public void setHope_voice(String hope_voice) { this.hope_voice = hope_voice; }
     public void setAboutMe(String aboutMe) { this.aboutMe = aboutMe; }
+    public void setHope_position(List<String> hope_position) { this.hope_position = hope_position; }
 }
