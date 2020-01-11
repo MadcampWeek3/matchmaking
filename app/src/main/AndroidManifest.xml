@@ -16,6 +16,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".MatchMainActivity"
+            android:theme="@style/NoActionbar"/>
     </application>
 
 </manifest>
