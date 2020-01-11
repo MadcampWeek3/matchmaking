@@ -1,5 +1,6 @@
 package com.example.matchmaking;
 
+<<<<<<< HEAD
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -9,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-public class MatchMainActivity extends AppCompatActivity{
+public class MatchMainActivity extends AppCompatActivity {
 
     private ProgressBar progressBar1;
     private ProgressBar progressBar2;
@@ -28,12 +29,10 @@ public class MatchMainActivity extends AppCompatActivity{
         progressBar3.getIndeterminateDrawable().setColorFilter(Color.parseColor("#4CAF50"), PorterDuff.Mode.MULTIPLY);
 
 
-        runOnUiThread(new ProgressBarRunnable(progressBar1,0,100));
-        runOnUiThread(new ProgressBarRunnable(progressBar2,0,100));
-        runOnUiThread(new ProgressBarRunnable(progressBar3,0,100));
+        runOnUiThread(new ProgressBarRunnable(progressBar1, 0, 100));
+        runOnUiThread(new ProgressBarRunnable(progressBar2, 0, 100));
+        runOnUiThread(new ProgressBarRunnable(progressBar3, 0, 100));
 
 
     }
-
-
 }
