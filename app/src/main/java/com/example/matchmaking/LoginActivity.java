@@ -29,7 +29,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.login);
 
         //바탕 클릭시 키보드 내리기
         constraintLayout = (ConstraintLayout)findViewById(R.id.loginConst);
@@ -70,6 +70,7 @@ public class LoginActivity extends AppCompatActivity {
                             Intent intent = new Intent(getApplicationContext(), MatchMainActivity.class);
                             intent.putExtra("userId",loginId.getText().toString());
                             startActivity(intent);
+                            finish();
                         }
                         else{
                             Toast.makeText(getApplicationContext(),"로그인 실패",Toast.LENGTH_SHORT).show();
@@ -81,7 +82,6 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d("LoginActivity", t.toString());
                     }
                 });
-
 
             }
         });

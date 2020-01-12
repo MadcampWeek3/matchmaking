@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -42,6 +43,13 @@ public class MatchMainActivity extends AppCompatActivity {
     User myinfo;
 
     private final static int EVALUATION_MAX_NUM = 1000;
+
+    Retrofit retrofit;
+    RetrofitInterface retrofitInterface;
+
+    private User user;
+    private String userId;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +67,26 @@ public class MatchMainActivity extends AppCompatActivity {
         amusednum = findViewById(R.id.match_status_num1);
         mentalnum = findViewById(R.id.match_status_num2);
         leadershipnum = findViewById(R.id.match_status_num3);
+        Intent intent1 = getIntent();
+        userId = intent1.getExtras().getString("userId");
+
+        retrofit = new Retrofit.Builder().baseUrl(retrofitInterface.API_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        retrofitInterface = retrofit.create(RetrofitInterface.class);
+
+        Call<User> comment = retrofitInterface.receiveUser(userId);
+        comment.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                user = response.body();
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.d("MatchMainActivity", t.toString());
+            }
+        });
+
+
 
         progressBar1 = findViewById(R.id.match_status_progress1);
         progressBar2 = findViewById(R.id.match_status_progress2);
@@ -100,5 +128,34 @@ public class MatchMainActivity extends AppCompatActivity {
                 Log.e("Get Failed",t.getMessage());
             }
         });
+        ImageButton settingButton = (ImageButton) findViewById(R.id.match_main_setting);
+        settingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent2 = new Intent(getApplicationContext(), SettingActivity.class);
+                intent2.putExtra("userNick", user.getNickname());
+                intent2.putExtra("userTier", user.getTier());
+                intent2.putExtra("userPosi", user.getPosition());
+                intent2.putExtra("userVoic", user.getVoice());
+                intent2.putExtra("userAboutMe", user.getAboutMe());
+                startActivityForResult(intent2, 1);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 1 && resultCode == RESULT_OK){
+            user.setNickname(data.getStringExtra("userNick"));
+            user.setTier(data.getStringExtra("userTier"));
+            user.setPosition(data.getStringExtra("userPosi"));
+            user.setVoice(data.getStringExtra("userVoic"));
+            user.setAboutMe(data.getStringExtra("userAboutMe"));
+            user.setHope_tendency(data.getStringExtra("userHope_tendency"));
+            user.setHope_voice(data.getStringExtra("userHope_voice"));
+            user.setHope_num(Integer.parseInt(data.getStringExtra("userHope_num")));
+        }
     }
 }

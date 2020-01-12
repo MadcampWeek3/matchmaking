@@ -15,7 +15,11 @@ public interface RetrofitInterface {
 
     @FormUrlEncoded
     @POST("users/login")
+<<<<<<< HEAD
     Call<String> sendLogin(@Field("id")String id, @Field("password")String pw);
+=======
+    Call<String> sendLogin(@Field("id")String id, @Field("pw")String pw);
+>>>>>>> a766a275900ec207dff1fb2e4a9084f11fc13163
 
     @POST("users/sign")
     Call<String> sendSign(@Body User user);
