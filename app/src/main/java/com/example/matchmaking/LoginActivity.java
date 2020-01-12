@@ -19,13 +19,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     EditText loginId;
     EditText loginPw;
-
-    Retrofit retrofit;
-    RetrofitInterface retrofitInterface;
 
     ConstraintLayout constraintLayout;
 
@@ -63,11 +60,9 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 //server에 id/pw 보내고 확인받기
-                retrofit = new Retrofit.Builder().baseUrl(retrofitInterface.API_URL).addConverterFactory(GsonConverterFactory.create()).build();
-                retrofitInterface = retrofit.create(RetrofitInterface.class);
 
-                Call<String> comment = retrofitInterface.sendLogin(loginId.getText().toString(), loginPw.getText().toString());
-                comment.enqueue(new Callback<String>() {
+
+                RetrofitHelper.getApiService().sendLogin(loginId.getText().toString(), loginPw.getText().toString()).enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
                         String response_ = response.body();
@@ -83,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<String> call, Throwable t) {
-                        Log.d("MainActivity", t.toString());
+                        Log.d("LoginActivity", t.toString());
                     }
                 });
 
