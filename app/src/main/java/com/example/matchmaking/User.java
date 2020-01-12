@@ -12,7 +12,6 @@ public class User {
     private Evaluation userEval;
     private String hope_tendency;
     private int hope_num;
-    private List<String> hope_position;
     private String hope_voice;
     private String aboutMe;
 
@@ -38,7 +37,6 @@ public class User {
     public int getHope_num() { return hope_num; }
     public String getHope_voice() { return hope_voice; }
     public String getAboutMe() { return aboutMe; }
-    public List<String> getHope_position() { return hope_position; }
 
 
     public void setId(String id) { this.id = id; }
@@ -52,5 +50,4 @@ public class User {
     public void setHope_num(int hope_num) { this.hope_num = hope_num; }
     public void setHope_voice(String hope_voice) { this.hope_voice = hope_voice; }
     public void setAboutMe(String aboutMe) { this.aboutMe = aboutMe; }
-    public void setHope_position(List<String> hope_position) { this.hope_position = hope_position; }
 }

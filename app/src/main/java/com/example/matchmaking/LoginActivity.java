@@ -19,7 +19,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     EditText loginId;
     EditText loginPw;
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.login);
 
         //바탕 클릭시 키보드 내리기
         constraintLayout = (ConstraintLayout)findViewById(R.id.loginConst);
@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
                             Intent intent = new Intent(getApplicationContext(), MatchMainActivity.class);
                             intent.putExtra("userId",loginId.getText().toString());
                             startActivity(intent);
+                            finish();
                         }
                         else{
                             Toast.makeText(getApplicationContext(),"로그인 실패",Toast.LENGTH_SHORT).show();
@@ -83,10 +84,9 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<String> call, Throwable t) {
-                        Log.d("MainActivity", t.toString());
+                        Log.d("LoginActivity", t.toString());
                     }
                 });
-
 
             }
         });
