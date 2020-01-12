@@ -4,4 +4,24 @@
         android:fontStyle = "normal"
         android:fontWeight = "400"
         android:font = "@font/notosanskr_black"/>
+
+    <font
+        android:fontStyle = "normal"
+        android:fontWeight = "400"
+        android:font = "@font/maplestorybold"/>
+
+    <font
+        android:fontStyle = "normal"
+        android:fontWeight = "400"
+        android:font = "@font/mailbox"/>
+
+    <font
+        android:fontStyle = "normal"
+        android:fontWeight = "400"
+        android:font = "@font/nanumgothic"/>
+
+    <font
+        android:fontStyle = "normal"
+        android:fontWeight = "400"
+        android:font = "@font/nanumgothicextrabold"/>
 </font-family>
