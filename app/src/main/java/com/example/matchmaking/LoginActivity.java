@@ -24,9 +24,6 @@ public class LoginActivity extends AppCompatActivity {
     EditText loginId;
     EditText loginPw;
 
-    Retrofit retrofit;
-    RetrofitInterface retrofitInterface;
-
     ConstraintLayout constraintLayout;
 
     @Override
@@ -63,11 +60,9 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
                 //server에 id/pw 보내고 확인받기
-                retrofit = new Retrofit.Builder().baseUrl(retrofitInterface.API_URL).addConverterFactory(GsonConverterFactory.create()).build();
-                retrofitInterface = retrofit.create(RetrofitInterface.class);
 
-                Call<String> comment = retrofitInterface.sendLogin(loginId.getText().toString(), loginPw.getText().toString());
-                comment.enqueue(new Callback<String>() {
+
+                RetrofitHelper.getApiService().sendLogin(loginId.getText().toString(), loginPw.getText().toString()).enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
                         String response_ = response.body();

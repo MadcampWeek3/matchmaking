@@ -11,11 +11,15 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface RetrofitInterface {
-    public static final String API_URL = "http://192.249.19.251:8780/";
+    String API_URL = "http://192.249.19.251:8780/";
 
     @FormUrlEncoded
     @POST("users/login")
+<<<<<<< HEAD
+    Call<String> sendLogin(@Field("id")String id, @Field("password")String pw);
+=======
     Call<String> sendLogin(@Field("id")String id, @Field("pw")String pw);
+>>>>>>> a766a275900ec207dff1fb2e4a9084f11fc13163
 
     @POST("users/sign")
     Call<String> sendSign(@Body User user);

@@ -15,6 +15,14 @@ public class User {
     private String hope_voice;
     private String aboutMe;
 
+    public User(String id, String nickname, String tier, String position, String voice) {
+        this.id = id;
+        this.nickname = nickname;
+        this.tier = tier;
+        this.position = position;
+        this.voice = voice;
+    }
+
     public User(String id, String password, String nickname, String tier, String position, String voice, String aboutMe) {
         this.id = id;
         this.password = password;

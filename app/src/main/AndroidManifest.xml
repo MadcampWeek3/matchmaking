@@ -23,6 +23,9 @@
         <activity android:name=".MatchMainActivity"
             android:theme="@style/NoActionbar"/>
         <activity android:name=".SignActivity"/>
+
+        <activity android:name=".MatchRoomActivity"
+            android:theme="@style/NoActionbar"/>
     </application>
 
 </manifest>
