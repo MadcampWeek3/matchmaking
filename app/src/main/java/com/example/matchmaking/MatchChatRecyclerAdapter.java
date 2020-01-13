@@ -33,7 +33,7 @@ public class MatchChatRecyclerAdapter extends RecyclerView.Adapter<MatchChatRecy
             holder.opponent_text.setVisibility(View.GONE);
             holder.opponent_time.setVisibility(View.GONE);
 
-            holder.my_name.setText(item.getUserid());
+            holder.my_name.setText(item.getNickname());
             holder.my_text.setText(item.getText());
             holder.my_time.setText(item.getTexttime());
 
@@ -47,7 +47,7 @@ public class MatchChatRecyclerAdapter extends RecyclerView.Adapter<MatchChatRecy
             holder.my_text.setVisibility(View.GONE);
             holder.my_time.setVisibility(View.GONE);
 
-            holder.opponent_name.setText(item.getUserid());
+            holder.opponent_name.setText(item.getNickname());
             holder.opponent_text.setText(item.getText());
             holder.opponent_time.setText(item.getTexttime());
 
@@ -94,7 +94,7 @@ public class MatchChatRecyclerAdapter extends RecyclerView.Adapter<MatchChatRecy
         }
     }
 
-    public void additem(String text, String time){
-        chat_list.add(new MatchChatRecyclerItem(userid,text,time));
+    public void additem(String text, String time,String nickname){
+        chat_list.add(new MatchChatRecyclerItem(userid,text,time,nickname));
     }
 }

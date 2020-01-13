@@ -47,7 +47,7 @@ public class MatchRoomRecyclerAdapter extends RecyclerView.Adapter<MatchRoomRecy
             holder.tierimg.setImageDrawable(mContext.getDrawable(R.drawable.platinum_1_36));
         else
             holder.tierimg.setImageDrawable(mContext.getDrawable(R.drawable.outline_check_green_36));
-        holder.nickname.setText(item.getId());
+        holder.nickname.setText(item.getNickname());
         holder.tiertxt.setText(item.getTiertxt());
         holder.positiontxt.setText(item.getPositiontxt());
         holder.voice.setText(item.getVoice());
@@ -85,7 +85,7 @@ public class MatchRoomRecyclerAdapter extends RecyclerView.Adapter<MatchRoomRecy
     }
 
     public void additem(User user){
-        userlist.add(new MatchRoomRecyclerItem(user.getId(),user.getTier(),user.getPosition(),user.getVoice()));
+        userlist.add(new MatchRoomRecyclerItem(user.getId(),user.getTier(),user.getPosition(),user.getVoice(),user.getNickname()));
     }
 
     public ArrayList<MatchRoomRecyclerItem> getUserlist() {
