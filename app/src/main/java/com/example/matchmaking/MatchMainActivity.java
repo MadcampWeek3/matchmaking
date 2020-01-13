@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -22,7 +21,6 @@ import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
 import io.socket.client.IO;
@@ -32,8 +30,6 @@ import io.socket.emitter.Emitter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MatchMainActivity extends AppCompatActivity {
@@ -55,14 +51,7 @@ public class MatchMainActivity extends AppCompatActivity {
     TextView mentalnum;
     TextView leadershipnum;
 
-    private String userid = "";
-
-    User myinfo;
-
     private final static int EVALUATION_MAX_NUM = 1000;
-
-    Retrofit retrofit;
-    RetrofitInterface retrofitInterface;
 
     private User user;
     private String userId;
@@ -71,8 +60,6 @@ public class MatchMainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.match_main);
-
-        userid = getIntent().getStringExtra("userId");
 
         nicknametxt = findViewById(R.id.match_main_id);
         tierimg = findViewById(R.id.match_main_tier_img);
@@ -87,24 +74,6 @@ public class MatchMainActivity extends AppCompatActivity {
         Intent intent1 = getIntent();
         userId = intent1.getExtras().getString("userId");
 
-        retrofit = new Retrofit.Builder().baseUrl(retrofitInterface.API_URL).addConverterFactory(GsonConverterFactory.create()).build();
-        retrofitInterface = retrofit.create(RetrofitInterface.class);
-
-        Call<User> comment = retrofitInterface.receiveUser(userId);
-        comment.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                user = response.body();
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Log.d("MatchMainActivity", t.toString());
-            }
-        });
-
-
-
         progressBar1 = findViewById(R.id.match_status_progress1);
         progressBar2 = findViewById(R.id.match_status_progress2);
         progressBar3 = findViewById(R.id.match_status_progress3);
@@ -113,36 +82,22 @@ public class MatchMainActivity extends AppCompatActivity {
         progressBar2.setMax(EVALUATION_MAX_NUM);
         progressBar3.setMax(EVALUATION_MAX_NUM);
 
-        findViewById(R.id.match_main_start).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    mSocket = IO.socket("http://192.249.19.251:9180");
-                    mSocket.connect();
-                    mSocket.on(Socket.EVENT_CONNECT, onMatchStart); //Socket.EVENT_CONNECT : 연결이 성공하면 발생하는 이벤트, onConnect : callback 객체
-                    mSocket.on("matchComplete", onMatchComplete);
-                } catch(URISyntaxException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        RetrofitHelper.getApiService().receiveUser(userid).enqueue(new Callback<User>() {
+        RetrofitHelper.getApiService().receiveUser(user.getId()).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                myinfo = response.body();
-                Log.e("Success",myinfo.getId());
-                nicknametxt.setText(myinfo.getId());
-                tiertxt.setText(myinfo.getTier());
-                positiontxt.setText(myinfo.getPosition());
-                voicetxt.setText(myinfo.getVoice());
-                amusednum.setText(Integer.toString(myinfo.getUserEval().getAmused()));
-                mentalnum.setText(Integer.toString(myinfo.getUserEval().getMental()));
-                leadershipnum.setText(Integer.toString(myinfo.getUserEval().getLeadership()));
+                user = response.body();
+                Log.e("Success",user.getId());
+                nicknametxt.setText(user.getId());
+                tiertxt.setText(user.getTier());
+                positiontxt.setText(user.getPosition());
+                voicetxt.setText(user.getVoice());
+                amusednum.setText(Integer.toString(user.getUserEval().getAmused()));
+                mentalnum.setText(Integer.toString(user.getUserEval().getMental()));
+                leadershipnum.setText(Integer.toString(user.getUserEval().getLeadership()));
 
-                runOnUiThread(new ProgressBarRunnable(progressBar1, 0, myinfo.getUserEval().getAmused()));
-                runOnUiThread(new ProgressBarRunnable(progressBar2, 0, myinfo.getUserEval().getMental()));
-                runOnUiThread(new ProgressBarRunnable(progressBar3, 0, myinfo.getUserEval().getLeadership()));
+                runOnUiThread(new ProgressBarRunnable(progressBar1, 0, user.getUserEval().getAmused()));
+                runOnUiThread(new ProgressBarRunnable(progressBar2, 0, user.getUserEval().getMental()));
+                runOnUiThread(new ProgressBarRunnable(progressBar3, 0, user.getUserEval().getLeadership()));
             }
 
             @Override
@@ -150,18 +105,28 @@ public class MatchMainActivity extends AppCompatActivity {
                 Log.e("Get Failed",t.getMessage());
             }
         });
+
         ImageButton settingButton = (ImageButton) findViewById(R.id.match_main_setting);
         settingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent2 = new Intent(getApplicationContext(), SettingActivity.class);
                 intent2.putExtra("userId", user.getId());
-                intent2.putExtra("userNick", user.getNickname());
-                intent2.putExtra("userTier", user.getTier());
-                intent2.putExtra("userPosi", user.getPosition());
-                intent2.putExtra("userVoic", user.getVoice());
-                intent2.putExtra("userAboutMe", user.getAboutMe());
                 startActivityForResult(intent2, 1);
+            }
+        });
+
+        findViewById(R.id.match_main_start).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    mSocket = IO.socket("http://192.249.19.251:9180");
+                    mSocket.connect();
+                    mSocket.on(Socket.EVENT_CONNECT, onMatchStart);
+                    mSocket.on("matchComplete", onMatchComplete);
+                } catch(URISyntaxException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -171,23 +136,22 @@ public class MatchMainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == 1 && resultCode == RESULT_OK){
-            RetrofitHelper.getApiService().receiveUser(userid).enqueue(new Callback<User>() {
+            RetrofitHelper.getApiService().receiveUser(user.getId()).enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
                     user = response.body();
-                    myinfo = response.body();
                     //view update
-                    nicknametxt.setText(myinfo.getId());
-                    tiertxt.setText(myinfo.getTier());
-                    positiontxt.setText(myinfo.getPosition());
-                    voicetxt.setText(myinfo.getVoice());
-                    amusednum.setText(Integer.toString(myinfo.getUserEval().getAmused()));
-                    mentalnum.setText(Integer.toString(myinfo.getUserEval().getMental()));
-                    leadershipnum.setText(Integer.toString(myinfo.getUserEval().getLeadership()));
+                    nicknametxt.setText(user.getId());
+                    tiertxt.setText(user.getTier());
+                    positiontxt.setText(user.getPosition());
+                    voicetxt.setText(user.getVoice());
+                    amusednum.setText(Integer.toString(user.getUserEval().getAmused()));
+                    mentalnum.setText(Integer.toString(user.getUserEval().getMental()));
+                    leadershipnum.setText(Integer.toString(user.getUserEval().getLeadership()));
 
-                    runOnUiThread(new ProgressBarRunnable(progressBar1, 0, myinfo.getUserEval().getAmused()));
-                    runOnUiThread(new ProgressBarRunnable(progressBar2, 0, myinfo.getUserEval().getMental()));
-                    runOnUiThread(new ProgressBarRunnable(progressBar3, 0, myinfo.getUserEval().getLeadership()));
+                    runOnUiThread(new ProgressBarRunnable(progressBar1, 0, user.getUserEval().getAmused()));
+                    runOnUiThread(new ProgressBarRunnable(progressBar2, 0, user.getUserEval().getMental()));
+                    runOnUiThread(new ProgressBarRunnable(progressBar3, 0, user.getUserEval().getLeadership()));
                 }
 
                 @Override
@@ -197,6 +161,7 @@ public class MatchMainActivity extends AppCompatActivity {
             });
         }
     }
+
     public void pushMessage(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("안내");
@@ -281,7 +246,6 @@ public class MatchMainActivity extends AppCompatActivity {
                 if(user.getId().equals(userId_)) check++;
                 userList.add(userId_);
             }
-            Log.d("check", check+"");
             if(check == 0) return;
             Intent intent = new Intent(getApplicationContext(), MatchRoomActivity.class);
             intent.putExtra("roomName", receiveData);
@@ -306,4 +270,10 @@ public class MatchMainActivity extends AppCompatActivity {
 //            });
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mSocket.disconnect();
+    }
 }
