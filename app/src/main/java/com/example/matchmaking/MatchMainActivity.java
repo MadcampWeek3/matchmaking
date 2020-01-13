@@ -26,7 +26,6 @@ import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
 import io.socket.client.IO;
@@ -38,6 +37,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.HEAD;
 
 
 public class MatchMainActivity extends AppCompatActivity {
@@ -81,8 +81,6 @@ public class MatchMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.match_main);
 
-        userid = getIntent().getStringExtra("userId");
-
         nicknametxt = findViewById(R.id.match_main_id);
         tierimg = findViewById(R.id.match_main_tier_img);
 
@@ -95,24 +93,6 @@ public class MatchMainActivity extends AppCompatActivity {
         mentalnum = findViewById(R.id.match_status_num2);
         leadershipnum = findViewById(R.id.match_status_num3);
 
-        retrofit = new Retrofit.Builder().baseUrl(retrofitInterface.API_URL).addConverterFactory(GsonConverterFactory.create()).build();
-        retrofitInterface = retrofit.create(RetrofitInterface.class);
-
-        Call<User> comment = retrofitInterface.receiveUser(userid);
-        comment.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                user = response.body();
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Log.d("MatchMainActivity", t.toString());
-            }
-        });
-
-
-
         progressBar1 = findViewById(R.id.match_status_progress1);
         progressBar2 = findViewById(R.id.match_status_progress2);
         progressBar3 = findViewById(R.id.match_status_progress3);
@@ -120,6 +100,32 @@ public class MatchMainActivity extends AppCompatActivity {
         progressBar1.setMax(EVALUATION_MAX_NUM);
         progressBar2.setMax(EVALUATION_MAX_NUM);
         progressBar3.setMax(EVALUATION_MAX_NUM);
+
+        RetrofitHelper.getApiService().receiveUser(user.getId()).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                user = response.body();
+                Log.e("Success", user.getId());
+                nicknametxt.setText(user.getId());
+                tiertxt.setText(user.getTier());
+                positiontxt.setText(user.getPosition());
+                voicetxt.setText(user.getVoice());
+                amusednum.setText(Integer.toString(user.getUserEval().getAmused()));
+                mentalnum.setText(Integer.toString(user.getUserEval().getMental()));
+                leadershipnum.setText(Integer.toString(user.getUserEval().getLeadership()));
+
+                runOnUiThread(new ProgressBarRunnable(progressBar1, 0, user.getUserEval().getAmused()));
+                runOnUiThread(new ProgressBarRunnable(progressBar2, 0, user.getUserEval().getMental()));
+                runOnUiThread(new ProgressBarRunnable(progressBar3, 0, user.getUserEval().getLeadership()));
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+
+            }
+        });
+
+
 
         settingButton = (ImageButton) findViewById(R.id.match_main_setting);
         match_start_btn = findViewById(R.id.match_main_start);
@@ -183,17 +189,28 @@ public class MatchMainActivity extends AppCompatActivity {
             }
         });
 
+        ImageButton settingButton = (ImageButton) findViewById(R.id.match_main_setting);
+
         settingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent2 = new Intent(getApplicationContext(), SettingActivity.class);
                 intent2.putExtra("userId", user.getId());
-                intent2.putExtra("userNick", user.getNickname());
-                intent2.putExtra("userTier", user.getTier());
-                intent2.putExtra("userPosi", user.getPosition());
-                intent2.putExtra("userVoic", user.getVoice());
-                intent2.putExtra("userAboutMe", user.getAboutMe());
                 startActivityForResult(intent2, 1);
+            }
+        });
+
+        findViewById(R.id.match_main_start).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    mSocket = IO.socket("http://192.249.19.251:9180");
+                    mSocket.connect();
+                    mSocket.on(Socket.EVENT_CONNECT, onMatchStart);
+                    mSocket.on("matchComplete", onMatchComplete);
+                } catch(URISyntaxException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -203,11 +220,10 @@ public class MatchMainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == 1 && resultCode == RESULT_OK){
-            RetrofitHelper.getApiService().receiveUser(userid).enqueue(new Callback<User>() {
+            RetrofitHelper.getApiService().receiveUser(user.getId()).enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
                     user = response.body();
-                    myinfo = response.body();
                     //view update
                     tierimg.setImageDrawable(gettierimg(myinfo.getTier()));
                     nicknametxt.setText(myinfo.getId());
@@ -231,6 +247,7 @@ public class MatchMainActivity extends AppCompatActivity {
             });
         }
     }
+
     public void pushMessage(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("안내");
@@ -354,6 +371,10 @@ public class MatchMainActivity extends AppCompatActivity {
     };
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mSocket.disconnect();
+    }
     public void onBackPressed() {
         if(ismatching == false)
             super.onBackPressed();
@@ -391,5 +412,4 @@ public class MatchMainActivity extends AppCompatActivity {
                 return getResources().getDrawable(R.drawable.emblem_iron_128);
         }
     }
-
 }
