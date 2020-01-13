@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="position">
-        <item>탑</item>
-        <item>정글</item>
-        <item>미드</item>
-        <item>바텀</item>
-        <item>서포터</item>
+        <item>top</item>
+        <item>jungle</item>
+        <item>mid</item>
+        <item>bottom</item>
+        <item>support</item>
     </string-array>
 </resources>

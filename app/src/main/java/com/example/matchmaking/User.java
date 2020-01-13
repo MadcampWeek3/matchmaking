@@ -32,6 +32,9 @@ public class User {
         this.voice = voice;
         this.aboutMe = aboutMe;
         this.userEval = new Evaluation();
+        this.hope_tendency = "즐겜";
+        this.hope_num = 2;
+        this.hope_voice = "가능";
     }
 
     public String getId() { return id; }

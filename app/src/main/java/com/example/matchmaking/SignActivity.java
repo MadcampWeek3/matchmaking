@@ -3,7 +3,6 @@ package com.example.matchmaking;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.renderscript.ScriptGroup;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -18,8 +17,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SignActivity extends Activity {
 

@@ -1,8 +1,6 @@
 package com.example.matchmaking;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -133,6 +131,7 @@ public class MatchMainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent2 = new Intent(getApplicationContext(), SettingActivity.class);
+                intent2.putExtra("userId", user.getId());
                 intent2.putExtra("userNick", user.getNickname());
                 intent2.putExtra("userTier", user.getTier());
                 intent2.putExtra("userPosi", user.getPosition());
@@ -148,14 +147,30 @@ public class MatchMainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == 1 && resultCode == RESULT_OK){
-            user.setNickname(data.getStringExtra("userNick"));
-            user.setTier(data.getStringExtra("userTier"));
-            user.setPosition(data.getStringExtra("userPosi"));
-            user.setVoice(data.getStringExtra("userVoic"));
-            user.setAboutMe(data.getStringExtra("userAboutMe"));
-            user.setHope_tendency(data.getStringExtra("userHope_tendency"));
-            user.setHope_voice(data.getStringExtra("userHope_voice"));
-            user.setHope_num(Integer.parseInt(data.getStringExtra("userHope_num")));
+            RetrofitHelper.getApiService().receiveUser(userid).enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> response) {
+                    user = response.body();
+                    myinfo = response.body();
+                    //view update
+                    nicknametxt.setText(myinfo.getId());
+                    tiertxt.setText(myinfo.getTier());
+                    positiontxt.setText(myinfo.getPosition());
+                    voicetxt.setText(myinfo.getVoice());
+                    amusednum.setText(Integer.toString(myinfo.getUserEval().getAmused()));
+                    mentalnum.setText(Integer.toString(myinfo.getUserEval().getMental()));
+                    leadershipnum.setText(Integer.toString(myinfo.getUserEval().getLeadership()));
+
+                    runOnUiThread(new ProgressBarRunnable(progressBar1, 0, myinfo.getUserEval().getAmused()));
+                    runOnUiThread(new ProgressBarRunnable(progressBar2, 0, myinfo.getUserEval().getMental()));
+                    runOnUiThread(new ProgressBarRunnable(progressBar3, 0, myinfo.getUserEval().getLeadership()));
+                }
+
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    Log.d("MatchMainActivity", t.toString());
+                }
+            });
         }
     }
 }
