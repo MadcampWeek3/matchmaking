@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import io.socket.client.Socket;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,6 +35,7 @@ public class MatchRoomActivity extends AppCompatActivity {
     private Boolean isready = false;
     private Button readybtn;
     private ArrayList<String> userlist;
+    private Socket mSocket;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,7 +43,6 @@ public class MatchRoomActivity extends AppCompatActivity {
         setContentView(R.layout.match_room);
 
         activity = this;
-
 
         userlist = getIntent().getStringArrayListExtra("userList");
         Log.e("user: ",userlist.get(0));

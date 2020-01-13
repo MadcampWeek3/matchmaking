@@ -1,6 +1,7 @@
 package com.example.matchmaking;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +45,7 @@ public class MatchRoomRecyclerAdapter extends RecyclerView.Adapter<MatchRoomRecy
     public void onBindViewHolder(@NonNull MatchRoomRecyclerAdapter.ViewHolder holder, int position) {
         MatchRoomRecyclerItem item = userlist.get(position);
         if(item.getTierimg() == true)
-            holder.tierimg.setImageDrawable(mContext.getDrawable(R.drawable.platinum_1_36));
+            holder.tierimg.setImageDrawable(gettierimg(item.getTiertxt()));
         else
             holder.tierimg.setImageDrawable(mContext.getDrawable(R.drawable.outline_check_green_36));
         holder.nickname.setText(item.getNickname());
@@ -90,5 +91,30 @@ public class MatchRoomRecyclerAdapter extends RecyclerView.Adapter<MatchRoomRecy
 
     public ArrayList<MatchRoomRecyclerItem> getUserlist() {
         return userlist;
+    }
+
+    public Drawable gettierimg(String tier){
+        switch (tier){
+            case "Challenger":
+                return mContext.getResources().getDrawable(R.drawable.emblem_challenger_36);
+            case "GrandMaster":
+                return mContext.getResources().getDrawable(R.drawable.emblem_grandmaster_36);
+            case "Master":
+                return mContext.getResources().getDrawable(R.drawable.emblem_master_36);
+            case "Diamond":
+                return mContext.getResources().getDrawable(R.drawable.emblem_diamond_36);
+            case "Platinum":
+                return mContext.getResources().getDrawable(R.drawable.emblem_platinum_36);
+            case "Gold":
+                return mContext.getResources().getDrawable(R.drawable.emblem_gold_36);
+            case "Silver":
+                return mContext.getResources().getDrawable(R.drawable.emblem_silver_36);
+            case "Bronze":
+                return mContext.getResources().getDrawable(R.drawable.emblem_bronze_36);
+            case "Iron":
+                return mContext.getResources().getDrawable(R.drawable.emblem_iron_36);
+            default:
+                return mContext.getResources().getDrawable(R.drawable.emblem_iron_36);
+        }
     }
 }

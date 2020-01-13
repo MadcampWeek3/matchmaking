@@ -2,6 +2,7 @@ package com.example.matchmaking;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -63,7 +64,7 @@ public class MatchMainActivity extends AppCompatActivity {
 
     User myinfo;
 
-    private final static int EVALUATION_MAX_NUM = 100;
+    private final static int EVALUATION_MAX_NUM = 200;
 
     Retrofit retrofit;
     RetrofitInterface retrofitInterface;
@@ -129,7 +130,7 @@ public class MatchMainActivity extends AppCompatActivity {
                 if(issetted == true) {
                     if(ismatching == false) {
                         try {
-                            mSocket = IO.socket("http://192.249.19.251:9180");
+                            mSocket = IO.socket("http://192.249.19.251:9980");
                             mSocket.connect();
                             mSocket.on(Socket.EVENT_CONNECT, onMatchStart); //Socket.EVENT_CONNECT : 연결이 성공하면 발생하는 이벤트, onConnect : callback 객체
                             mSocket.on("matchComplete", onMatchComplete);
@@ -161,6 +162,7 @@ public class MatchMainActivity extends AppCompatActivity {
             public void onResponse(Call<User> call, Response<User> response) {
                 myinfo = response.body();
                 Log.e("Success",myinfo.getId());
+                tierimg.setImageDrawable(gettierimg(myinfo.getTier()));
                 nicknametxt.setText(myinfo.getNickname());
                 tiertxt.setText(myinfo.getTier());
                 positiontxt.setText(myinfo.getPosition());
@@ -207,6 +209,7 @@ public class MatchMainActivity extends AppCompatActivity {
                     user = response.body();
                     myinfo = response.body();
                     //view update
+                    tierimg.setImageDrawable(gettierimg(myinfo.getTier()));
                     nicknametxt.setText(myinfo.getId());
                     tiertxt.setText(myinfo.getTier());
                     positiontxt.setText(myinfo.getPosition());
@@ -301,24 +304,25 @@ public class MatchMainActivity extends AppCompatActivity {
     private Emitter.Listener onMatchComplete = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            int check = 0;
-            final String receiveData = args[0].toString();
-            Log.d("matched", receiveData);
-            StringTokenizer st = new StringTokenizer(receiveData, "\"");
-            final ArrayList<String> userList = new ArrayList<String>();
-            while(st.hasMoreElements()){
-                String userId_ = st.nextToken();
-                if(userId_.equals("[") || userId_.equals("]") || userId_.equals(",")) continue;
-                if(user.getId().equals(userId_)) check++;
-                userList.add(userId_);
-            }
-            Log.d("check", check+"");
-            Log.d("user",userList.get(0));
-            if(check == 0) return;
-            Intent intent = new Intent(getApplicationContext(), MatchRoomActivity.class);
-            intent.putExtra("userid",user.getId());
-            intent.putExtra("roomName", receiveData);
-            intent.putStringArrayListExtra("userList", userList);
+            if(ismatching == true) {
+                int check = 0;
+                final String receiveData = args[0].toString();
+                Log.d("matched", receiveData);
+                StringTokenizer st = new StringTokenizer(receiveData, "\"");
+                final ArrayList<String> userList = new ArrayList<String>();
+                while (st.hasMoreElements()) {
+                    String userId_ = st.nextToken();
+                    if (userId_.equals("[") || userId_.equals("]") || userId_.equals(",")) continue;
+                    if (user.getId().equals(userId_)) check++;
+                    userList.add(userId_);
+                }
+                Log.d("check", check + "");
+                Log.d("user", userList.get(0));
+                if (check == 0) return;
+                Intent intent = new Intent(getApplicationContext(), MatchRoomActivity.class);
+                intent.putExtra("userid", user.getId());
+                intent.putExtra("roomName", receiveData);
+                intent.putStringArrayListExtra("userList", userList);
 
 //            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
 //            builder.setTitle("안내");
@@ -338,13 +342,14 @@ public class MatchMainActivity extends AppCompatActivity {
 //                }
 //            });
 
-            ismatching = false;
-            settingButton.clearAnimation();
-            settingButton.setClickable(true);
-            match_start_btn.setText("MATCHING START");
-            match_start_btn.setBackgroundColor(getResources().getColor(R.color.MatchButtonColor));
+                settingButton.clearAnimation();
+                settingButton.setClickable(true);
+                match_start_btn.setText("MATCHING START");
+                match_start_btn.setBackgroundColor(getResources().getColor(R.color.MatchButtonColor));
 
-            startActivity(intent);
+                ismatching = false;
+                startActivity(intent);
+            }
         }
     };
 
@@ -362,5 +367,29 @@ public class MatchMainActivity extends AppCompatActivity {
         }
     }
 
+    public Drawable gettierimg(String tier){
+        switch (tier){
+            case "Challenger":
+                return getResources().getDrawable(R.drawable.emblem_challenger_128);
+            case "GrandMaster":
+                return getResources().getDrawable(R.drawable.emblem_grandmaster_128);
+            case "Master":
+                return getResources().getDrawable(R.drawable.emblem_master_128);
+            case "Diamond":
+                return getResources().getDrawable(R.drawable.emblem_diamond_128);
+            case "Platinum":
+                return getResources().getDrawable(R.drawable.emblem_platinum_128);
+            case "Gold":
+                return getResources().getDrawable(R.drawable.emblem_gold_128);
+            case "Silver":
+                return getResources().getDrawable(R.drawable.emblem_silver_128);
+            case "Bronze":
+                return getResources().getDrawable(R.drawable.emblem_bronze_128);
+            case "Iron":
+                return getResources().getDrawable(R.drawable.emblem_iron_128);
+            default:
+                return getResources().getDrawable(R.drawable.emblem_iron_128);
+        }
+    }
 
 }
