@@ -281,24 +281,29 @@ public class MatchMainActivity extends AppCompatActivity {
                 if(user.getId().equals(userId_)) check++;
                 userList.add(userId_);
             }
+            Log.d("check", check+"");
             if(check == 0) return;
-            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-            builder.setTitle("안내");
-            builder.setMessage("수락하시겠습니까?");
-            builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent intent = new Intent(getApplicationContext(), MatchRoomActivity.class);
-                    intent.putExtra("roomName", receiveData);
-                    intent.putStringArrayListExtra("userList", userList);
-                }
-            });
-            builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
+            Intent intent = new Intent(getApplicationContext(), MatchRoomActivity.class);
+            intent.putExtra("roomName", receiveData);
+            intent.putStringArrayListExtra("userList", userList);
 
-                }
-            });
+//            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+//            builder.setTitle("안내");
+//            builder.setMessage("수락하시겠습니까?");
+//            builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    Intent intent = new Intent(getApplicationContext(), MatchRoomActivity.class);
+//                    intent.putExtra("roomName", receiveData);
+//                    intent.putStringArrayListExtra("userList", userList);
+//                }
+//            });
+//            builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//
+//                }
+//            });
         }
     };
 }
