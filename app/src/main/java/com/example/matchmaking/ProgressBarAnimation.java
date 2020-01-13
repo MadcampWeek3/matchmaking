@@ -15,7 +15,6 @@ public class ProgressBarAnimation extends Animation {
         this.progressBar = progressBar;
         this.from = from;
         this.to = to;
-        this.progressBar.setMax((int)to);
     }
 
     @Override

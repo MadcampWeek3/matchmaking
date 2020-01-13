@@ -1,16 +1,18 @@
 package com.example.matchmaking;
 
 
+import android.graphics.Bitmap;
+
 public class MatchRoomRecyclerItem {
 
-    private String nickname;
     private String tiertxt;
     private String positiontxt;
     private String voice;
     private String id;
+    private boolean tierimg = true;
 
-    public MatchRoomRecyclerItem(String nickname, String tiertxt, String positiontxt, String voice) {
-        this.nickname = nickname;
+    public MatchRoomRecyclerItem(String id, String tiertxt, String positiontxt, String voice) {
+        this.id = id;
         this.tiertxt = tiertxt;
         this.positiontxt = positiontxt;
         this.voice = voice;
@@ -20,13 +22,6 @@ public class MatchRoomRecyclerItem {
         return id;
     }
 
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
 
     public String getTiertxt() {
         return tiertxt;
@@ -50,5 +45,13 @@ public class MatchRoomRecyclerItem {
 
     public void setVoice(String voice) {
         this.voice = voice;
+    }
+
+    public boolean getTierimg() {
+        return tierimg;
+    }
+
+    public void setTierimg(boolean tierimg) {
+        this.tierimg = tierimg;
     }
 }

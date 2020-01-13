@@ -33,7 +33,7 @@ public class SettingActivity extends Activity {
         final Spinner userVoic_s = (Spinner)findViewById(R.id.setVoic);
         final EditText userAboutMe_e = (EditText)findViewById(R.id.setAboutMe);
 
-        final Spinner hope_tendency_s = (Spinner)findViewById(R.id.setHope_voice);
+        final Spinner hope_tendency_s = (Spinner)findViewById(R.id.setHope_tendency);
         final Spinner hope_voice_s = (Spinner)findViewById(R.id.setHope_voice);
         final Spinner hope_num_s = (Spinner)findViewById(R.id.setHope_Num);
 

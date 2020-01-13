@@ -25,7 +25,13 @@
         <activity android:name=".SignActivity"/>
 
         <activity android:name=".MatchRoomActivity"
+            android:theme="@style/MatchRoom"/>
+
+        <activity android:name=".MatchUserInfoActivity"
             android:theme="@style/NoActionbar"/>
+
+        <activity android:name=".MatchChatActivity"
+            android:theme="@style/MatchchatRoom"/>
     </application>
 
 </manifest>

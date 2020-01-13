@@ -7,4 +7,6 @@
     <color name="colorBlack">#000000</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="viewline">#F1F1F1</color>
+    <color name="chatcolor">#B1C6E2</color>
+    <color name="canclecolor">#9C9C9C</color>
 </resources>

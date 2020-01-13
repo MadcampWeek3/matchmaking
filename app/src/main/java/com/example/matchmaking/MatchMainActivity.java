@@ -33,6 +33,7 @@ public class MatchMainActivity extends AppCompatActivity {
     TextView tiertxt;
     TextView positiontxt;
     TextView voicetxt;
+    private TextView aboutMetxt;
 
     TextView amusednum;
     TextView mentalnum;
@@ -42,13 +43,12 @@ public class MatchMainActivity extends AppCompatActivity {
 
     User myinfo;
 
-    private final static int EVALUATION_MAX_NUM = 1000;
+    private final static int EVALUATION_MAX_NUM = 100;
 
     Retrofit retrofit;
     RetrofitInterface retrofitInterface;
 
     private User user;
-    private String userId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,17 +63,16 @@ public class MatchMainActivity extends AppCompatActivity {
         tiertxt = findViewById(R.id.match_main_tier_write);
         positiontxt = findViewById(R.id.match_main_position_write);
         voicetxt = findViewById(R.id.match_main_voice_write);
+        aboutMetxt = findViewById(R.id.match_main_introduce_write);
 
         amusednum = findViewById(R.id.match_status_num1);
         mentalnum = findViewById(R.id.match_status_num2);
         leadershipnum = findViewById(R.id.match_status_num3);
-        Intent intent1 = getIntent();
-        userId = intent1.getExtras().getString("userId");
 
         retrofit = new Retrofit.Builder().baseUrl(retrofitInterface.API_URL).addConverterFactory(GsonConverterFactory.create()).build();
         retrofitInterface = retrofit.create(RetrofitInterface.class);
 
-        Call<User> comment = retrofitInterface.receiveUser(userId);
+        Call<User> comment = retrofitInterface.receiveUser(userid);
         comment.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -114,6 +113,7 @@ public class MatchMainActivity extends AppCompatActivity {
                 tiertxt.setText(myinfo.getTier());
                 positiontxt.setText(myinfo.getPosition());
                 voicetxt.setText(myinfo.getVoice());
+                aboutMetxt.setText(myinfo.getAboutMe());
                 amusednum.setText(Integer.toString(myinfo.getUserEval().getAmused()));
                 mentalnum.setText(Integer.toString(myinfo.getUserEval().getMental()));
                 leadershipnum.setText(Integer.toString(myinfo.getUserEval().getLeadership()));

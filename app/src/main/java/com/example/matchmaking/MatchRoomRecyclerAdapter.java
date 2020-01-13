@@ -17,10 +17,18 @@ public class MatchRoomRecyclerAdapter extends RecyclerView.Adapter<MatchRoomRecy
 
     private ArrayList<MatchRoomRecyclerItem> userlist = new ArrayList<>();
     private Context mContext;
+    private OnUserClickListener mListener = null;
+
+    public interface OnUserClickListener{
+        void OnItemClick(View v, int position);
+    }
+
 
     public MatchRoomRecyclerAdapter(Context context){
         this.mContext = context;
     }
+    public void setOnUserClickListener(OnUserClickListener listener) { this.mListener = listener; }
+
 
     @NonNull
     @Override
@@ -35,8 +43,11 @@ public class MatchRoomRecyclerAdapter extends RecyclerView.Adapter<MatchRoomRecy
     @Override
     public void onBindViewHolder(@NonNull MatchRoomRecyclerAdapter.ViewHolder holder, int position) {
         MatchRoomRecyclerItem item = userlist.get(position);
-        holder.tierimg.setImageDrawable(mContext.getDrawable(R.drawable.platinum_1_36));
-        holder.nickname.setText(item.getNickname());
+        if(item.getTierimg() == true)
+            holder.tierimg.setImageDrawable(mContext.getDrawable(R.drawable.platinum_1_36));
+        else
+            holder.tierimg.setImageDrawable(mContext.getDrawable(R.drawable.outline_check_green_36));
+        holder.nickname.setText(item.getId());
         holder.tiertxt.setText(item.getTiertxt());
         holder.positiontxt.setText(item.getPositiontxt());
         holder.voice.setText(item.getVoice());
@@ -62,10 +73,22 @@ public class MatchRoomRecyclerAdapter extends RecyclerView.Adapter<MatchRoomRecy
             tiertxt = itemView.findViewById(R.id.match_room_item_tier_write);
             positiontxt = itemView.findViewById(R.id.match_room_item_position_write);
             voice = itemView.findViewById(R.id.match_room_item_voice_write);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(RecyclerView.NO_POSITION != getAdapterPosition() && mListener != null)
+                        mListener.OnItemClick(v,getAdapterPosition());
+                }
+            });
         }
     }
 
     public void additem(User user){
         userlist.add(new MatchRoomRecyclerItem(user.getId(),user.getTier(),user.getPosition(),user.getVoice()));
+    }
+
+    public ArrayList<MatchRoomRecyclerItem> getUserlist() {
+        return userlist;
     }
 }
