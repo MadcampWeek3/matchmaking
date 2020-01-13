@@ -27,7 +27,8 @@ public class MatchChatRecyclerAdapter extends RecyclerView.Adapter<MatchChatRecy
     @Override
     public void onBindViewHolder(@NonNull MatchChatRecyclerAdapter.ViewHolder holder, int position) {
         MatchChatRecyclerItem item = chat_list.get(position);
-        if(item.getUserid().equals(userid)){
+
+        if(item.getUserid() != null && userid != null && item.getUserid().equals(userid)){
             holder.opponent_name.setVisibility(View.GONE);
             holder.opponent_text.setVisibility(View.GONE);
             holder.opponent_time.setVisibility(View.GONE);
@@ -39,7 +40,9 @@ public class MatchChatRecyclerAdapter extends RecyclerView.Adapter<MatchChatRecy
             holder.my_name.setVisibility(View.VISIBLE);
             holder.my_text.setVisibility(View.VISIBLE);
             holder.my_time.setVisibility(View.VISIBLE);
-        }else{
+            if(position - 1 >= 0 && chat_list.get(position-1).getUserid().equals(chat_list.get(position).getUserid()))
+                holder.my_name.setVisibility(View.GONE);
+        }else if(item.getUserid() != null && userid != null && !item.getUserid().equals(userid)){
             holder.my_name.setVisibility(View.GONE);
             holder.my_text.setVisibility(View.GONE);
             holder.my_time.setVisibility(View.GONE);
@@ -51,6 +54,8 @@ public class MatchChatRecyclerAdapter extends RecyclerView.Adapter<MatchChatRecy
             holder.opponent_name.setVisibility(View.VISIBLE);
             holder.opponent_text.setVisibility(View.VISIBLE);
             holder.opponent_time.setVisibility(View.VISIBLE);
+            if(position - 1 >= 0 && chat_list.get(position-1).getUserid().equals(chat_list.get(position).getUserid()))
+                holder.opponent_name.setVisibility(View.GONE);
         }
     }
 
@@ -59,7 +64,7 @@ public class MatchChatRecyclerAdapter extends RecyclerView.Adapter<MatchChatRecy
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.match_room_item,parent,false);
+        View view = inflater.inflate(R.layout.match_chat_item,parent,false);
         MatchChatRecyclerAdapter.ViewHolder tvh = new MatchChatRecyclerAdapter.ViewHolder(view);
         return tvh;
     }

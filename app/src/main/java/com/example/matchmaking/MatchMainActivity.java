@@ -30,6 +30,8 @@ import io.socket.emitter.Emitter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MatchMainActivity extends AppCompatActivity {
@@ -46,6 +48,7 @@ public class MatchMainActivity extends AppCompatActivity {
     TextView tiertxt;
     TextView positiontxt;
     TextView voicetxt;
+    private TextView aboutMetxt;
 
     TextView amusednum;
     TextView mentalnum;
@@ -53,8 +56,10 @@ public class MatchMainActivity extends AppCompatActivity {
 
     private final static int EVALUATION_MAX_NUM = 1000;
 
+    private final static int EVALUATION_MAX_NUM = 100;
+
     private User user;
-    private String userId;
+    private boolean issetted = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,12 +72,11 @@ public class MatchMainActivity extends AppCompatActivity {
         tiertxt = findViewById(R.id.match_main_tier_write);
         positiontxt = findViewById(R.id.match_main_position_write);
         voicetxt = findViewById(R.id.match_main_voice_write);
+        aboutMetxt = findViewById(R.id.match_main_introduce_write);
 
         amusednum = findViewById(R.id.match_status_num1);
         mentalnum = findViewById(R.id.match_status_num2);
         leadershipnum = findViewById(R.id.match_status_num3);
-        Intent intent1 = getIntent();
-        userId = intent1.getExtras().getString("userId");
 
         progressBar1 = findViewById(R.id.match_status_progress1);
         progressBar2 = findViewById(R.id.match_status_progress2);
@@ -248,6 +252,7 @@ public class MatchMainActivity extends AppCompatActivity {
             }
             if(check == 0) return;
             Intent intent = new Intent(getApplicationContext(), MatchRoomActivity.class);
+            intent.putExtra("userid",user.getId());
             intent.putExtra("roomName", receiveData);
             intent.putStringArrayListExtra("userList", userList);
 

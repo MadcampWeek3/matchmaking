@@ -7,47 +7,22 @@
     android:layout_height="match_parent"
     android:background="#F1F1F1">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/match_main_start_cardview"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/MatchButtonColor"
-        app:cardCornerRadius="15dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/match_main_guideline_h1">
-
-        <Button
-            android:id="@+id/match_main_start"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/MatchButtonColor"
-            android:text="Matching Start"
-            android:textColor="@color/colorBlack"
-            android:textSize="27sp"
-            android:textStyle="bold" />
-    </androidx.cardview.widget.CardView>
-
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/match_main_guideline_h1"
+        android:id="@+id/match_userinfo_guideline_h1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_end="100dp" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/match_main_guideline_h2"
+        android:id="@+id/match_userinfo_guideline_h2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="50dp" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/match_main_personal_cardview"
+        android:id="@+id/match_userinfo_personal_cardview"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
@@ -55,35 +30,35 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         app:cardCornerRadius="15dp"
-        app:layout_constraintBottom_toTopOf="@+id/match_main_guideline_h3"
+        app:layout_constraintBottom_toTopOf="@+id/match_userinfo_guideline_h3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/match_main_guideline_h2">
+        app:layout_constraintTop_toTopOf="@+id/match_userinfo_guideline_h2">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/match_main_cardview_guideline_v2"
+                android:id="@+id/match_userinfo_cardview_guideline_v2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintGuide_begin="163dp" />
 
             <ImageButton
-                android:id="@+id/match_main_tier_img"
+                android:id="@+id/match_userinfo_tier_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
                 android:background="@color/colorWhite"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/match_main_cardview_guideline_v2"
+                app:layout_constraintEnd_toStartOf="@+id/match_userinfo_cardview_guideline_v2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:srcCompat="@drawable/platinum_1_128" />
 
             <TextView
-                android:id="@+id/match_main_id"
+                android:id="@+id/match_userinfo_id"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
@@ -92,79 +67,79 @@
                 android:text="닉네임"
                 android:textColor="@color/colorBlack"
                 android:textSize="20sp"
-                app:layout_constraintEnd_toStartOf="@+id/match_main_cardview_guideline_v2"
+                app:layout_constraintEnd_toStartOf="@+id/match_userinfo_cardview_guideline_v2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/match_main_cardview_guideline_v3"
+                android:id="@+id/match_userinfo_cardview_guideline_v3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 app:layout_constraintGuide_begin="60dp" />
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/match_main_cardview_guideline_v4"
+                android:id="@+id/match_userinfo_cardview_guideline_v4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 app:layout_constraintGuide_begin="120dp" />
 
             <View
-                android:id="@+id/match_main_divider1"
+                android:id="@+id/match_userinfo_divider1"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_marginTop="60dp"
                 android:background="@color/viewline"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/match_main_cardview_guideline_v2"
+                app:layout_constraintStart_toStartOf="@+id/match_userinfo_cardview_guideline_v2"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <View
-                android:id="@+id/match_main_divider2"
+                android:id="@+id/match_userinfo_divider2"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_marginBottom="60dp"
                 android:background="@color/viewline"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/match_main_cardview_guideline_v2" />
+                app:layout_constraintStart_toStartOf="@+id/match_userinfo_cardview_guideline_v2" />
 
             <View
-                android:id="@+id/match_main_divider3"
+                android:id="@+id/match_userinfo_divider3"
                 android:layout_width="1dp"
                 android:layout_height="wrap_content"
                 android:background="@color/viewline"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/match_main_cardview_guideline_v2"
+                app:layout_constraintStart_toStartOf="@+id/match_userinfo_cardview_guideline_v2"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/match_main_tier"
+                android:id="@+id/match_userinfo_tier"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:fontFamily="@font/notosanskr_black"
                 android:text="티어"
                 android:textSize="20sp"
-                app:layout_constraintBottom_toTopOf="@+id/match_main_cardview_guideline_v3"
-                app:layout_constraintStart_toStartOf="@+id/match_main_cardview_guideline_v2"
+                app:layout_constraintBottom_toTopOf="@+id/match_userinfo_cardview_guideline_v3"
+                app:layout_constraintStart_toStartOf="@+id/match_userinfo_cardview_guideline_v2"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/match_main_position"
+                android:id="@+id/match_userinfo_position"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:fontFamily="@font/notosanskr_black"
                 android:text="포지션"
                 android:textSize="20sp"
-                app:layout_constraintBottom_toTopOf="@+id/match_main_cardview_guideline_v4"
-                app:layout_constraintStart_toStartOf="@+id/match_main_cardview_guideline_v2"
-                app:layout_constraintTop_toTopOf="@+id/match_main_cardview_guideline_v3" />
+                app:layout_constraintBottom_toTopOf="@+id/match_userinfo_cardview_guideline_v4"
+                app:layout_constraintStart_toStartOf="@+id/match_userinfo_cardview_guideline_v2"
+                app:layout_constraintTop_toTopOf="@+id/match_userinfo_cardview_guideline_v3" />
 
             <TextView
-                android:id="@+id/match_main_voice"
+                android:id="@+id/match_userinfo_voice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
@@ -172,11 +147,11 @@
                 android:text="보이스톡"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/match_main_cardview_guideline_v2"
-                app:layout_constraintTop_toTopOf="@+id/match_main_cardview_guideline_v4" />
+                app:layout_constraintStart_toStartOf="@+id/match_userinfo_cardview_guideline_v2"
+                app:layout_constraintTop_toTopOf="@+id/match_userinfo_cardview_guideline_v4" />
 
             <TextView
-                android:id="@+id/match_main_tier_write"
+                android:id="@+id/match_userinfo_tier_write"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="50dp"
@@ -184,12 +159,12 @@
                 android:text="플래티넘I"
                 android:textColor="@color/colorBlack"
                 android:textSize="15sp"
-                app:layout_constraintBottom_toTopOf="@+id/match_main_cardview_guideline_v3"
-                app:layout_constraintStart_toEndOf="@+id/match_main_tier"
+                app:layout_constraintBottom_toTopOf="@+id/match_userinfo_cardview_guideline_v3"
+                app:layout_constraintStart_toEndOf="@+id/match_userinfo_tier"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/match_main_position_write"
+                android:id="@+id/match_userinfo_position_write"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="45dp"
@@ -197,12 +172,12 @@
                 android:text="AD"
                 android:textColor="@color/colorBlack"
                 android:textSize="15sp"
-                app:layout_constraintBottom_toTopOf="@+id/match_main_cardview_guideline_v4"
-                app:layout_constraintStart_toEndOf="@+id/match_main_position"
-                app:layout_constraintTop_toTopOf="@+id/match_main_cardview_guideline_v3" />
+                app:layout_constraintBottom_toTopOf="@+id/match_userinfo_cardview_guideline_v4"
+                app:layout_constraintStart_toEndOf="@+id/match_userinfo_position"
+                app:layout_constraintTop_toTopOf="@+id/match_userinfo_cardview_guideline_v3" />
 
             <TextView
-                android:id="@+id/match_main_voice_write"
+                android:id="@+id/match_userinfo_voice_write"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
@@ -211,14 +186,14 @@
                 android:textColor="@color/colorBlack"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/match_main_voice"
-                app:layout_constraintTop_toTopOf="@+id/match_main_cardview_guideline_v4" />
+                app:layout_constraintStart_toEndOf="@+id/match_userinfo_voice"
+                app:layout_constraintTop_toTopOf="@+id/match_userinfo_cardview_guideline_v4" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/match_main_state_cardview"
+        android:id="@+id/match_userinfo_state_cardview"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
@@ -226,17 +201,17 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="24dp"
         app:cardCornerRadius="17dp"
-        app:layout_constraintBottom_toTopOf="@+id/match_main_guideline_h1"
+        app:layout_constraintBottom_toTopOf="@+id/match_userinfo_guideline_h1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/match_main_personal_cardview">
+        app:layout_constraintTop_toBottomOf="@+id/match_userinfo_personal_cardview">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/match_main_status_bar1"
+                android:id="@+id/match_userinfo_status_bar1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -257,7 +232,7 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="17dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/match_status_num1"
+                    app:layout_constraintEnd_toStartOf="@+id/match_userinfo_status_num1"
                     app:layout_constraintStart_toEndOf="@+id/match_status_kind1"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -274,7 +249,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/match_status_num1"
+                    android:id="@+id/match_userinfo_status_num1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -288,12 +263,12 @@
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/match_main_status_bar2"
+                android:id="@+id/match_userinfo_status_bar2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/match_main_status_bar1">
+                app:layout_constraintTop_toBottomOf="@+id/match_userinfo_status_bar1">
 
                 <ProgressBar
                     android:id="@+id/match_status_progress2"
@@ -308,7 +283,7 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="17dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/match_status_num2"
+                    app:layout_constraintEnd_toStartOf="@+id/match_userinfo_status_num2"
                     app:layout_constraintStart_toEndOf="@+id/match_status_kind2"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -325,7 +300,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/match_status_num2"
+                    android:id="@+id/match_userinfo_status_num2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -339,12 +314,12 @@
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/match_main_status_bar3"
+                android:id="@+id/match_userinfo_status_bar3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/match_main_status_bar2">
+                app:layout_constraintTop_toBottomOf="@+id/match_userinfo_status_bar2">
 
                 <ProgressBar
                     android:id="@+id/match_status_progress3"
@@ -360,7 +335,7 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="17dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/match_status_num3"
+                    app:layout_constraintEnd_toStartOf="@+id/match_userinfo_status_num3"
                     app:layout_constraintStart_toEndOf="@+id/match_status_kind3"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -377,7 +352,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/match_status_num3"
+                    android:id="@+id/match_userinfo_status_num3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -389,42 +364,33 @@
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <View
-                android:id="@+id/match_main_divider5"
-                android:layout_width="1dp"
-                android:layout_height="0dp"
-                android:background="@color/viewline"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/match_main_guideline_v1"
-                app:layout_constraintTop_toBottomOf="@+id/match_main_divider4" />
-
             <TextView
-                android:id="@+id/match_main_introduce"
+                android:id="@+id/match_userinfo_introduce"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/notosanskr_medium"
                 android:text="자기소개"
                 android:textColor="@color/colorBlack"
-                android:textSize="15sp"
-                app:layout_constraintEnd_toStartOf="@+id/match_main_guideline_v1"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/match_main_divider4" />
+                app:layout_constraintTop_toBottomOf="@+id/match_userinfo_divider4" />
 
             <TextView
-                android:id="@+id/match_main_introduce_write"
+                android:id="@+id/match_userinfo_introduce_write"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:fontFamily="@font/notosanskr_medium"
                 android:text="음"
                 android:textSize="20sp"
-                app:layout_constraintEnd_toStartOf="@+id/match_main_guideline_v1"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/match_main_introduce" />
+                app:layout_constraintTop_toBottomOf="@+id/match_userinfo_introduce" />
 
             <View
-                android:id="@+id/match_main_divider4"
+                android:id="@+id/match_userinfo_divider4"
                 android:layout_width="wrap_content"
                 android:layout_height="2dp"
                 android:layout_marginTop="175dp"
@@ -432,30 +398,12 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/match_main_guideline_v1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_begin="189dp" />
-
-            <ImageButton
-                android:id="@+id/match_main_setting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/colorWhite"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/match_main_guideline_v1"
-                app:layout_constraintTop_toBottomOf="@+id/match_main_divider4"
-                app:srcCompat="@drawable/outline_settings_applications_black_36" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/match_main_guideline_h3"
+        android:id="@+id/match_userinfo_guideline_h3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
