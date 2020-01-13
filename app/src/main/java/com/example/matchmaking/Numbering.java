@@ -48,4 +48,8 @@ public class Numbering {
 
         return 0;
     }
+
+    public static int room(int tier, int tendency, int voice, int num){
+        return tier*16 + tendency*8 + voice*4 + num;
+    }
 }

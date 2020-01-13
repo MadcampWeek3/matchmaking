@@ -31,10 +31,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
-        Intent intent = new Intent(getApplicationContext(), MatchMainActivity.class);
-        intent.putExtra("userId","root");
-        startActivity(intent);
-
         //바탕 클릭시 키보드 내리기
         constraintLayout = (ConstraintLayout)findViewById(R.id.loginConst);
         constraintLayout.setOnClickListener(new View.OnClickListener() {

@@ -1,5 +1,6 @@
 package com.example.matchmaking;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,9 +9,25 @@ import android.widget.ImageView;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.gson.JsonObject;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,6 +37,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MatchMainActivity extends AppCompatActivity {
+
+    private io.socket.client.Socket mSocket;
 
     private ProgressBar progressBar1;
     private ProgressBar progressBar2;
@@ -97,9 +116,14 @@ public class MatchMainActivity extends AppCompatActivity {
         findViewById(R.id.match_main_start).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),MatchRoomActivity.class);
-                intent.putExtra("userid",userid);
-                startActivity(intent);
+                try {
+                    mSocket = IO.socket("http://192.249.19.251:9180");
+                    mSocket.connect();
+                    mSocket.on(Socket.EVENT_CONNECT, onMatchStart); //Socket.EVENT_CONNECT : 연결이 성공하면 발생하는 이벤트, onConnect : callback 객체
+                    mSocket.on("matchComplete", onMatchComplete);
+                } catch(URISyntaxException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -173,4 +197,108 @@ public class MatchMainActivity extends AppCompatActivity {
             });
         }
     }
+    public void pushMessage(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("안내");
+        builder.setMessage("수락하시겠습니까?");
+        builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+    }
+
+    //matching start 버튼 누르면 소켓에 연결하고 User 정보를 보냄
+    private Emitter.Listener onMatchStart = new Emitter.Listener() {
+        int roomNumber;
+        @Override
+        public void call(Object... args) {
+            if(Numbering.tendency(user.getHope_tendency()) == 2 && Numbering.voice(user.getHope_voice()) == 2){
+                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, 0, user.getHope_num() - 2);
+                sendRoom(roomNumber);
+                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, 1, user.getHope_num() - 2);
+                sendRoom(roomNumber);
+                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, 0, user.getHope_num() - 2);
+                sendRoom(roomNumber);
+                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, 1, user.getHope_num() - 2);
+                sendRoom(roomNumber);
+            }
+            else if(Numbering.tendency(user.getHope_tendency()) == 2){
+                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
+                sendRoom(roomNumber);
+                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
+                sendRoom(roomNumber);
+            }
+            else if(Numbering.voice(user.getHope_voice()) == 2){
+                roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), 0, user.getHope_num() - 2);
+                sendRoom(roomNumber);
+                roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), 1, user.getHope_num() - 2);
+                sendRoom(roomNumber);
+
+            }
+            else {
+                roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
+                sendRoom(roomNumber);
+            }
+        }
+    };
+    //start match 에서 사용할
+    public void sendRoom(int num){
+        JsonObject userInfo = new JsonObject();
+        userInfo.addProperty("userId", user.getId());
+        userInfo.addProperty("userPosi", user.getPosition());
+        userInfo.addProperty("roomNumber", num);
+
+        JSONObject jsonObject = null;
+
+        try {
+            jsonObject = new JSONObject(userInfo.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mSocket.emit("enterRoom", jsonObject);
+    }
+
+    //
+    private Emitter.Listener onMatchComplete = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            int check = 0;
+            final String receiveData = args[0].toString();
+            Log.d("matched", receiveData);
+            StringTokenizer st = new StringTokenizer(receiveData, "\"");
+            final ArrayList<String> userList = new ArrayList<String>();
+            while(st.hasMoreElements()){
+                String userId_ = st.nextToken();
+                if(userId_.equals("[") || userId_.equals("]") || userId_.equals(",")) continue;
+                if(user.getId().equals(userId_)) check++;
+                userList.add(userId_);
+            }
+            if(check == 0) return;
+            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+            builder.setTitle("안내");
+            builder.setMessage("수락하시겠습니까?");
+            builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(getApplicationContext(), MatchRoomActivity.class);
+                    intent.putExtra("roomName", receiveData);
+                    intent.putStringArrayListExtra("userList", userList);
+                }
+            });
+            builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+        }
+    };
 }
