@@ -15,6 +15,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -31,7 +33,7 @@ public class MatchRoomActivity extends AppCompatActivity {
     private Activity activity;
     private Boolean isready = false;
     private Button readybtn;
-    private String userlist[];
+    private ArrayList<String> userlist;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,7 +43,8 @@ public class MatchRoomActivity extends AppCompatActivity {
         activity = this;
 
 
-        userlist = getIntent().getStringArrayExtra("userList");
+        userlist = getIntent().getStringArrayListExtra("userList");
+        Log.e("user: ",userlist.get(0));
         userid = getIntent().getStringExtra("userid");
         roomid = getIntent().getStringExtra("roomName");
 
@@ -62,8 +65,8 @@ public class MatchRoomActivity extends AppCompatActivity {
 
         //chat
         matchChatRecyclerAdapter = new MatchChatRecyclerAdapter(userid,roomid);
-        matchChatRecyclerAdapter.additem("ㅎㅇㅎㅇ","16:20");
-        matchChatRecyclerAdapter.additem("ㄱㄱ?","16:20");
+        matchChatRecyclerAdapter.additem("ㅎㅇㅎㅇ","16:20","ggg");
+        matchChatRecyclerAdapter.additem("ㄱㄱ?","16:20","ggg");
 
         chatrecyclerView = findViewById(R.id.match_room_chat_recycler);
         chatrecyclerView.setClickable(true);
@@ -71,8 +74,8 @@ public class MatchRoomActivity extends AppCompatActivity {
         chatrecyclerView.setAdapter(matchChatRecyclerAdapter);
 
 
-        for(int i = 0; i < userlist.length; i++){
-            String user_id = userlist[i];
+        for(int i = 0; i < userlist.size(); i++){
+            String user_id = userlist.get(i);
             RetrofitHelper.getApiService().receiveUser(user_id).enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {

@@ -9,19 +9,24 @@ public class MatchRoomRecyclerItem {
     private String positiontxt;
     private String voice;
     private String id;
+    private String nickname;
     private boolean tierimg = true;
 
-    public MatchRoomRecyclerItem(String id, String tiertxt, String positiontxt, String voice) {
+    public MatchRoomRecyclerItem(String id, String tiertxt, String positiontxt, String voice, String nickname) {
         this.id = id;
         this.tiertxt = tiertxt;
         this.positiontxt = positiontxt;
         this.voice = voice;
+        this.nickname = nickname;
+    }
+
+    public String getNickname() {
+        return nickname;
     }
 
     public String getId() {
         return id;
     }
-
 
     public String getTiertxt() {
         return tiertxt;

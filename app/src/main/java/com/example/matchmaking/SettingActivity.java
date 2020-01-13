@@ -58,9 +58,12 @@ public class SettingActivity extends Activity {
                 userVoic_s.setSelection(Numbering.voice(user.getVoice()));
                 userAboutMe_e.setText(user.getAboutMe());
 
-                hope_tendency_s.setSelection(Numbering.tendency(user.getHope_tendency()));
-                hope_voice_s.setSelection(Numbering.voice(user.getHope_voice()));
-                hope_num_s.setSelection(Numbering.num(user.getHope_num()));
+                if(user.getHope_tendency() != null)
+                    hope_tendency_s.setSelection(Numbering.tendency(user.getHope_tendency()));
+                if(user.getHope_voice() != null)
+                    hope_voice_s.setSelection(Numbering.voice(user.getHope_voice()));
+                if(user.getHope_num() != 0)
+                    hope_num_s.setSelection(Numbering.num(user.getHope_num()));
             }
 
             @Override

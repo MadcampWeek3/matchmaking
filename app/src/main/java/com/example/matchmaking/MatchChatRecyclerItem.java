@@ -5,11 +5,13 @@ public class MatchChatRecyclerItem {
     private String userid;
     private String text;
     private String texttime;
+    private String nickname;
 
-    public MatchChatRecyclerItem(String userid, String text, String texttime) {
+    public MatchChatRecyclerItem(String userid, String text, String texttime,String nickname) {
         this.userid = userid;
         this.text = text;
         this.texttime = texttime;
+        this.nickname = nickname;
     }
 
     public String getUserid() {
@@ -34,5 +36,13 @@ public class MatchChatRecyclerItem {
 
     public void setTexttime(String texttime) {
         this.texttime = texttime;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 }

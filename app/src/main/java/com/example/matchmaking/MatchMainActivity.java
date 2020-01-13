@@ -5,10 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -32,6 +36,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.HEAD;
 
 
 public class MatchMainActivity extends AppCompatActivity {
@@ -56,10 +61,12 @@ public class MatchMainActivity extends AppCompatActivity {
 
     private final static int EVALUATION_MAX_NUM = 1000;
 
-    private final static int EVALUATION_MAX_NUM = 100;
-
     private User user;
     private boolean issetted = false;
+    private Button match_start_btn;
+    private ImageButton settingButton;
+    private boolean ismatching = false;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,7 +97,7 @@ public class MatchMainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 user = response.body();
-                Log.e("Success",user.getId());
+                Log.e("Success", user.getId());
                 nicknametxt.setText(user.getId());
                 tiertxt.setText(user.getTier());
                 positiontxt.setText(user.getPosition());
@@ -106,7 +113,45 @@ public class MatchMainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Log.e("Get Failed",t.getMessage());
+
+            }
+        });
+
+
+
+        settingButton = (ImageButton) findViewById(R.id.match_main_setting);
+        match_start_btn = findViewById(R.id.match_main_start);
+
+        match_start_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(issetted == true) {
+                    if(ismatching == false) {
+                        try {
+                            mSocket = IO.socket("http://192.249.19.251:9180");
+                            mSocket.connect();
+                            mSocket.on(Socket.EVENT_CONNECT, onMatchStart); //Socket.EVENT_CONNECT : 연결이 성공하면 발생하는 이벤트, onConnect : callback 객체
+                            mSocket.on("matchComplete", onMatchComplete);
+
+                            match_start_btn.setText("MATCHING...");
+                            match_start_btn.setBackgroundColor(getResources().getColor(R.color.canclecolor));
+                            Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
+                            ismatching = true;
+                            settingButton.setClickable(false);
+                            settingButton.startAnimation(animation);
+
+                        } catch (URISyntaxException e) {
+                            e.printStackTrace();
+                        }
+                    }else{
+                        settingButton.setClickable(true);
+                        ismatching = false;
+                        settingButton.clearAnimation();
+                        match_start_btn.setText("MATCHING START");
+                        match_start_btn.setBackgroundColor(getResources().getColor(R.color.MatchButtonColor));
+                    }
+                }else
+                    Toast.makeText(getApplicationContext(),"설정을 완료해주세요.",Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -145,6 +190,7 @@ public class MatchMainActivity extends AppCompatActivity {
                 public void onResponse(Call<User> call, Response<User> response) {
                     user = response.body();
                     //view update
+
                     nicknametxt.setText(user.getId());
                     tiertxt.setText(user.getTier());
                     positiontxt.setText(user.getPosition());
@@ -156,6 +202,7 @@ public class MatchMainActivity extends AppCompatActivity {
                     runOnUiThread(new ProgressBarRunnable(progressBar1, 0, user.getUserEval().getAmused()));
                     runOnUiThread(new ProgressBarRunnable(progressBar2, 0, user.getUserEval().getMental()));
                     runOnUiThread(new ProgressBarRunnable(progressBar3, 0, user.getUserEval().getLeadership()));
+                    issetted = true;
                 }
 
                 @Override
@@ -250,6 +297,8 @@ public class MatchMainActivity extends AppCompatActivity {
                 if(user.getId().equals(userId_)) check++;
                 userList.add(userId_);
             }
+            Log.d("check", check+"");
+            Log.d("user",userList.get(0));
             if(check == 0) return;
             Intent intent = new Intent(getApplicationContext(), MatchRoomActivity.class);
             intent.putExtra("userid",user.getId());
@@ -273,6 +322,14 @@ public class MatchMainActivity extends AppCompatActivity {
 //
 //                }
 //            });
+
+            ismatching = false;
+            settingButton.clearAnimation();
+            settingButton.setClickable(true);
+            match_start_btn.setText("MATCHING START");
+            match_start_btn.setBackgroundColor(getResources().getColor(R.color.MatchButtonColor));
+
+            startActivity(intent);
         }
     };
 
@@ -280,5 +337,17 @@ public class MatchMainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mSocket.disconnect();
+    }
+    public void onBackPressed() {
+        if(ismatching == false)
+            super.onBackPressed();
+        else {
+            Toast.makeText(getApplicationContext(), "매칭을 취소합니다.", Toast.LENGTH_SHORT).show();
+            settingButton.setClickable(true);
+            ismatching = false;
+            settingButton.clearAnimation();
+            match_start_btn.setText("MATCHING START");
+            match_start_btn.setBackgroundColor(getResources().getColor(R.color.MatchButtonColor));
+        }
     }
 }
