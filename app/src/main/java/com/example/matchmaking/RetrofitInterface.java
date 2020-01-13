@@ -8,6 +8,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface RetrofitInterface {
@@ -22,4 +23,7 @@ public interface RetrofitInterface {
 
     @GET("users/user/{userId}")
     Call<User> receiveUser(@Path("userId")String userId);
+
+    @PUT("users/user/{userId}")
+    Call<User> updateUser(@Path("userId")String userId, @Body User user);
 }

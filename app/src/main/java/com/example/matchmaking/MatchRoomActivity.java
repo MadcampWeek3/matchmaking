@@ -41,8 +41,9 @@ public class MatchRoomActivity extends AppCompatActivity {
         activity = this;
 
 
+        userlist = getIntent().getStringArrayExtra("userList");
         userid = getIntent().getStringExtra("userid");
-        roomid = "0";
+        roomid = getIntent().getStringExtra("roomName");
 
         //room
         matchRoomRecyclerAdapter = new MatchRoomRecyclerAdapter(getApplicationContext());
@@ -70,34 +71,23 @@ public class MatchRoomActivity extends AppCompatActivity {
         chatrecyclerView.setAdapter(matchChatRecyclerAdapter);
 
 
+        for(int i = 0; i < userlist.length; i++){
+            String user_id = userlist[i];
+            RetrofitHelper.getApiService().receiveUser(user_id).enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> response) {
+                    User user = response.body();
+                    matchRoomRecyclerAdapter.additem(user);
+                    matchRoomRecyclerAdapter.notifyDataSetChanged();
+                    recyclerView.invalidateItemDecorations();
+                }
 
-        User user1 = new User("One","One","Master","미드","가능");
-        User user2 = new User("Two","Two","Master","정글","가능");
-        User user3 = new User("Three","Three","Master","서폿","가능");
-        User user4 = new User("Four","Four","Master","원딜","가능");
-        //User user5 = new User("Five","Five","Master","탑","가능");
-
-        matchRoomRecyclerAdapter.additem(user1);
-        matchRoomRecyclerAdapter.additem(user2);
-        matchRoomRecyclerAdapter.additem(user3);
-        matchRoomRecyclerAdapter.additem(user4);
-        //matchRoomRecyclerAdapter.additem(user5);
-
-
-        RetrofitHelper.getApiService().receiveUser(userid).enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                User user = response.body();
-                matchRoomRecyclerAdapter.additem(user);
-                matchRoomRecyclerAdapter.notifyDataSetChanged();
-                recyclerView.invalidateItemDecorations();
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Log.e("MatchRoomActivity",t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    Log.e("MatchRoomActivity",t.getMessage());
+                }
+            });
+        }
 
         chatbtn = findViewById(R.id.match_room_chat_btn);
         chatbtn.setOnClickListener(new View.OnClickListener() {
