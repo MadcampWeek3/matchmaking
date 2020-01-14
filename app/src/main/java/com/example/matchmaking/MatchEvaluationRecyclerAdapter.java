@@ -1,5 +1,6 @@
 package com.example.matchmaking;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -65,6 +66,8 @@ public class MatchEvaluationRecyclerAdapter extends RecyclerView.Adapter<MatchEv
                 });
                 recyclerItems.remove(position);
                 notifyDataSetChanged();
+                if(recyclerItems.size() == 0)
+                    ((Activity)mContext).finish();
             }
         });
 
@@ -85,6 +88,8 @@ public class MatchEvaluationRecyclerAdapter extends RecyclerView.Adapter<MatchEv
                 });
                 recyclerItems.remove(position);
                 notifyDataSetChanged();
+                if(recyclerItems.size() == 0)
+                    ((Activity)mContext).finish();
             }
         });
 
@@ -105,6 +110,8 @@ public class MatchEvaluationRecyclerAdapter extends RecyclerView.Adapter<MatchEv
                 });
                 recyclerItems.remove(position);
                 notifyDataSetChanged();
+                if(recyclerItems.size() == 0)
+                    ((Activity)mContext).finish();
             }
         });
     }

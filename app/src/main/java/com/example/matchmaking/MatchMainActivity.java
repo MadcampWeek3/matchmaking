@@ -413,4 +413,13 @@ public class MatchMainActivity extends AppCompatActivity {
                 return getResources().getDrawable(R.drawable.emblem_iron_128);
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        amusednum.invalidate();
+        mentalnum.invalidate();
+        leadershipnum.invalidate();
+    }
 }
