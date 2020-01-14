@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -15,8 +17,18 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,6 +46,7 @@ public class MatchRoomActivity extends AppCompatActivity {
     private Boolean isready = false;
     private Button readybtn;
     private ArrayList<String> userlist;
+    private Socket mSocket;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,6 +86,17 @@ public class MatchRoomActivity extends AppCompatActivity {
         chatrecyclerView.setLayoutManager(new LinearLayoutManager(this));
         chatrecyclerView.setAdapter(matchChatRecyclerAdapter);
 
+        try {
+            mSocket = IO.socket("http://192.249.19.251:9180");
+            mSocket.connect();
+            mSocket.on(Socket.EVENT_CONNECT, connected); //Socket.EVENT_CONNECT : 연결이 성공하면 발생하는 이벤트, onConnect : callback 객체
+            mSocket.on("receiveReady", onReceiveReady);
+            mSocket.on("receiveUnReady", onReceiveUnReady);
+
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
 
         for(int i = 0; i < userlist.size(); i++){
             String user_id = userlist.get(i);
@@ -110,14 +134,19 @@ public class MatchRoomActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //소켓에 신호
                 if(isready == false) {
-                    v.animate().translationY(-500);
-                    for(int i = 0; i < matchRoomRecyclerAdapter.getUserlist().size(); i++){
-                        if(!matchRoomRecyclerAdapter.getUserlist().get(i).getId().equals(userid))
-                            continue;
-                        matchRoomRecyclerAdapter.getUserlist().get(i).setTierimg(false);
-                        matchRoomRecyclerAdapter.notifyDataSetChanged();
-                        recyclerView.invalidateItemDecorations();
+                    JsonObject readyInfo = new JsonObject();
+                    readyInfo.addProperty("userId", userid);
+                    readyInfo.addProperty("roomId", roomid);
+
+                    JSONObject jsonObject = null;
+                    try {
+                        jsonObject = new JSONObject(readyInfo.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+                    mSocket.emit("ready", jsonObject);
+
+                    v.animate().translationY(-500);
                     isready = true;
                 }
             }
@@ -127,17 +156,91 @@ public class MatchRoomActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(isready == true) {
-                    readybtn.animate().translationY(0);
-                    for(int i = 0; i < matchRoomRecyclerAdapter.getUserlist().size(); i++){
-                        if(!matchRoomRecyclerAdapter.getUserlist().get(i).getId().equals(userid))
-                            continue;
-                        matchRoomRecyclerAdapter.getUserlist().get(i).setTierimg(true);
-                        matchRoomRecyclerAdapter.notifyDataSetChanged();
-                        recyclerView.invalidateItemDecorations();
+                    JsonObject readyInfo = new JsonObject();
+                    readyInfo.addProperty("userId", userid);
+                    readyInfo.addProperty("roomId", roomid);
+
+                    JSONObject jsonObject = null;
+                    try {
+                        jsonObject = new JSONObject(readyInfo.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+                    mSocket.emit("unready", jsonObject);
+
+                    readybtn.animate().translationY(0);
                     isready = false;
                 }
             }
         });
+    }
+
+    private Emitter.Listener connected = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Log.d("MatchRoomActivity", "소켓 연결");
+        }
+    };
+
+    private Emitter.Listener onReceiveReady = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JsonParser jsonParser = new JsonParser();
+            JsonObject readyInfo = (JsonObject) jsonParser.parse(args[0] + "");
+            try {
+                String readyUser = readyInfo.get("userId").getAsString();
+                Log.d("readyUser", readyUser + "      " + matchRoomRecyclerAdapter.getUserlist().get(0).getId());
+                String readyRoom = readyInfo.get("roomId").getAsString();
+                Log.d("readyRoom", readyRoom + "    " + roomid);
+                if (!readyRoom.equals(roomid)) return;
+                for (int i = 0; i < matchRoomRecyclerAdapter.getUserlist().size(); i++)
+                    if (matchRoomRecyclerAdapter.getUserlist().get(i).getId().equals(readyUser))
+                        matchRoomRecyclerAdapter.getUserlist().get(i).setTierimg(false);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        matchRoomRecyclerAdapter.notifyDataSetChanged();
+                        recyclerView.invalidateItemDecorations();
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private Emitter.Listener onReceiveUnReady = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JsonParser jsonParser = new JsonParser();
+            JsonObject unreadyInfo = (JsonObject) jsonParser.parse(args[0] + "");
+            try {
+                String unreadyUser = unreadyInfo.get("userId").getAsString();
+                Log.d("unreadyUser", unreadyUser);
+                String unreadyRoom = unreadyInfo.get("roomId").getAsString();
+                Log.d("unreadyRoom", unreadyRoom);
+                if (!unreadyRoom.equals(roomid)) return;
+                for (int j = 0; j < matchRoomRecyclerAdapter.getUserlist().size(); j++)
+                    if (matchRoomRecyclerAdapter.getUserlist().get(j).getId().equals(unreadyUser))
+                        matchRoomRecyclerAdapter.getUserlist().get(j).setTierimg(true);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        matchRoomRecyclerAdapter.notifyDataSetChanged();
+                        recyclerView.invalidateItemDecorations();
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mSocket.disconnect();
     }
 }

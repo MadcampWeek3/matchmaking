@@ -93,7 +93,7 @@ public class MatchMainActivity extends AppCompatActivity {
         progressBar2.setMax(EVALUATION_MAX_NUM);
         progressBar3.setMax(EVALUATION_MAX_NUM);
 
-        RetrofitHelper.getApiService().receiveUser(user.getId()).enqueue(new Callback<User>() {
+        RetrofitHelper.getApiService().receiveUser(getIntent().getExtras().getString("userId")).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 user = response.body();
@@ -116,7 +116,6 @@ public class MatchMainActivity extends AppCompatActivity {
 
             }
         });
-
 
 
         settingButton = (ImageButton) findViewById(R.id.match_main_setting);
@@ -149,6 +148,8 @@ public class MatchMainActivity extends AppCompatActivity {
                         settingButton.clearAnimation();
                         match_start_btn.setText("MATCHING START");
                         match_start_btn.setBackgroundColor(getResources().getColor(R.color.MatchButtonColor));
+                        int roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
+                        sendUnRoom(roomNumber);
                     }
                 }else
                     Toast.makeText(getApplicationContext(),"설정을 완료해주세요.",Toast.LENGTH_SHORT).show();
@@ -162,20 +163,6 @@ public class MatchMainActivity extends AppCompatActivity {
                 Intent intent2 = new Intent(getApplicationContext(), SettingActivity.class);
                 intent2.putExtra("userId", user.getId());
                 startActivityForResult(intent2, 1);
-            }
-        });
-
-        findViewById(R.id.match_main_start).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    mSocket = IO.socket("http://192.249.19.251:9180");
-                    mSocket.connect();
-                    mSocket.on(Socket.EVENT_CONNECT, onMatchStart);
-                    mSocket.on("matchComplete", onMatchComplete);
-                } catch(URISyntaxException e) {
-                    e.printStackTrace();
-                }
             }
         });
     }
@@ -213,23 +200,6 @@ public class MatchMainActivity extends AppCompatActivity {
         }
     }
 
-    public void pushMessage(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("안내");
-        builder.setMessage("수락하시겠습니까?");
-        builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-    }
 
     //matching start 버튼 누르면 소켓에 연결하고 User 정보를 보냄
     private Emitter.Listener onMatchStart = new Emitter.Listener() {
@@ -282,6 +252,21 @@ public class MatchMainActivity extends AppCompatActivity {
         mSocket.emit("enterRoom", jsonObject);
     }
 
+    public void sendUnRoom(int num){
+        JsonObject userInfo = new JsonObject();
+        userInfo.addProperty("userId", user.getId());
+        userInfo.addProperty("userPosi", user.getPosition());
+        userInfo.addProperty("roomNumber", num);
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(userInfo.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mSocket.emit("exitRoom", jsonObject);
+        mSocket.disconnect();
+    }
+
     //
     private Emitter.Listener onMatchComplete = new Emitter.Listener() {
         @Override
@@ -305,24 +290,7 @@ public class MatchMainActivity extends AppCompatActivity {
             intent.putExtra("roomName", receiveData);
             intent.putStringArrayListExtra("userList", userList);
 
-//            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-//            builder.setTitle("안내");
-//            builder.setMessage("수락하시겠습니까?");
-//            builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    Intent intent = new Intent(getApplicationContext(), MatchRoomActivity.class);
-//                    intent.putExtra("roomName", receiveData);
-//                    intent.putStringArrayListExtra("userList", userList);
-//                }
-//            });
-//            builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//
-//                }
-//            });
-
+            mSocket.disconnect();
             ismatching = false;
             settingButton.clearAnimation();
             settingButton.setClickable(true);
@@ -336,7 +304,8 @@ public class MatchMainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mSocket.disconnect();
+        int roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
+        sendUnRoom(roomNumber);
     }
     public void onBackPressed() {
         if(ismatching == false)
@@ -348,6 +317,9 @@ public class MatchMainActivity extends AppCompatActivity {
             settingButton.clearAnimation();
             match_start_btn.setText("MATCHING START");
             match_start_btn.setBackgroundColor(getResources().getColor(R.color.MatchButtonColor));
+
+            int roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
+            sendUnRoom(roomNumber);
         }
     }
 }
