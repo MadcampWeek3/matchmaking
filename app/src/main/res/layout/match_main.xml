@@ -15,6 +15,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:backgroundTint="@color/MatchButtonColor"
+        android:clickable="false"
         app:cardCornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -79,6 +80,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/match_main_cardview_guideline_v2"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/match_main_id"
                 app:srcCompat="@drawable/platinum_1_128" />
 
             <TextView
@@ -90,6 +92,7 @@
                 android:text="닉네임"
                 android:textColor="@color/colorBlack"
                 android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/match_main_cardview_guideline_v3"
                 app:layout_constraintEnd_toStartOf="@+id/match_main_cardview_guideline_v2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

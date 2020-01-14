@@ -69,7 +69,6 @@ public class MatchMainActivity extends AppCompatActivity {
     Retrofit retrofit;
     RetrofitInterface retrofitInterface;
 
-    private User user;
     private boolean issetted = false;
     private Button match_start_btn;
     private ImageButton settingButton;
@@ -80,6 +79,8 @@ public class MatchMainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.match_main);
+
+        userid = getIntent().getStringExtra("userId");
 
         nicknametxt = findViewById(R.id.match_main_id);
         tierimg = findViewById(R.id.match_main_tier_img);
@@ -100,68 +101,6 @@ public class MatchMainActivity extends AppCompatActivity {
         progressBar1.setMax(EVALUATION_MAX_NUM);
         progressBar2.setMax(EVALUATION_MAX_NUM);
         progressBar3.setMax(EVALUATION_MAX_NUM);
-
-        RetrofitHelper.getApiService().receiveUser(user.getId()).enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                user = response.body();
-                Log.e("Success", user.getId());
-                nicknametxt.setText(user.getId());
-                tiertxt.setText(user.getTier());
-                positiontxt.setText(user.getPosition());
-                voicetxt.setText(user.getVoice());
-                amusednum.setText(Integer.toString(user.getUserEval().getAmused()));
-                mentalnum.setText(Integer.toString(user.getUserEval().getMental()));
-                leadershipnum.setText(Integer.toString(user.getUserEval().getLeadership()));
-
-                runOnUiThread(new ProgressBarRunnable(progressBar1, 0, user.getUserEval().getAmused()));
-                runOnUiThread(new ProgressBarRunnable(progressBar2, 0, user.getUserEval().getMental()));
-                runOnUiThread(new ProgressBarRunnable(progressBar3, 0, user.getUserEval().getLeadership()));
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-
-            }
-        });
-
-
-
-        settingButton = (ImageButton) findViewById(R.id.match_main_setting);
-        match_start_btn = findViewById(R.id.match_main_start);
-
-        match_start_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(issetted == true) {
-                    if(ismatching == false) {
-                        try {
-                            mSocket = IO.socket("http://192.249.19.251:9980");
-                            mSocket.connect();
-                            mSocket.on(Socket.EVENT_CONNECT, onMatchStart); //Socket.EVENT_CONNECT : 연결이 성공하면 발생하는 이벤트, onConnect : callback 객체
-                            mSocket.on("matchComplete", onMatchComplete);
-
-                            match_start_btn.setText("MATCHING...");
-                            match_start_btn.setBackgroundColor(getResources().getColor(R.color.canclecolor));
-                            Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
-                            ismatching = true;
-                            settingButton.setClickable(false);
-                            settingButton.startAnimation(animation);
-
-                        } catch (URISyntaxException e) {
-                            e.printStackTrace();
-                        }
-                    }else{
-                        settingButton.setClickable(true);
-                        ismatching = false;
-                        settingButton.clearAnimation();
-                        match_start_btn.setText("MATCHING START");
-                        match_start_btn.setBackgroundColor(getResources().getColor(R.color.MatchButtonColor));
-                    }
-                }else
-                    Toast.makeText(getApplicationContext(),"설정을 완료해주세요.",Toast.LENGTH_SHORT).show();
-            }
-        });
 
         RetrofitHelper.getApiService().receiveUser(userid).enqueue(new Callback<User>() {
             @Override
@@ -189,13 +128,51 @@ public class MatchMainActivity extends AppCompatActivity {
             }
         });
 
+
+
+        settingButton = (ImageButton) findViewById(R.id.match_main_setting);
+        match_start_btn = findViewById(R.id.match_main_start);
+
+        match_start_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(issetted == true) {
+                    if(ismatching == false) {
+                        try {
+                            mSocket = IO.socket("http://192.249.19.251:8780");
+                            mSocket.connect();
+                            mSocket.on(Socket.EVENT_CONNECT, onMatchStart); //Socket.EVENT_CONNECT : 연결이 성공하면 발생하는 이벤트, onConnect : callback 객체
+                            mSocket.on("matchComplete", onMatchComplete);
+
+                            match_start_btn.setText("MATCHING...");
+                            match_start_btn.setBackgroundColor(getResources().getColor(R.color.canclecolor));
+                            Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
+                            ismatching = true;
+                            settingButton.setClickable(false);
+                            settingButton.startAnimation(animation);
+
+                        } catch (URISyntaxException e) {
+                            e.printStackTrace();
+                        }
+                    }else{
+                        settingButton.setClickable(true);
+                        ismatching = false;
+                        settingButton.clearAnimation();
+                        match_start_btn.setText("MATCHING START");
+                        match_start_btn.setBackgroundColor(getResources().getColor(R.color.MatchButtonColor));
+                    }
+                }else
+                    Toast.makeText(getApplicationContext(),"설정을 완료해주세요.",Toast.LENGTH_SHORT).show();
+            }
+        });
+
         ImageButton settingButton = (ImageButton) findViewById(R.id.match_main_setting);
 
         settingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent2 = new Intent(getApplicationContext(), SettingActivity.class);
-                intent2.putExtra("userId", user.getId());
+                intent2.putExtra("userId", myinfo.getId());
                 startActivityForResult(intent2, 1);
             }
         });
@@ -204,7 +181,7 @@ public class MatchMainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    mSocket = IO.socket("http://192.249.19.251:9180");
+                    mSocket = IO.socket("http://192.249.19.251:8780");
                     mSocket.connect();
                     mSocket.on(Socket.EVENT_CONNECT, onMatchStart);
                     mSocket.on("matchComplete", onMatchComplete);
@@ -220,10 +197,10 @@ public class MatchMainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == 1 && resultCode == RESULT_OK){
-            RetrofitHelper.getApiService().receiveUser(user.getId()).enqueue(new Callback<User>() {
+            RetrofitHelper.getApiService().receiveUser(myinfo.getId()).enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
-                    user = response.body();
+                    myinfo = response.body();
                     //view update
                     tierimg.setImageDrawable(gettierimg(myinfo.getTier()));
                     nicknametxt.setText(myinfo.getId());
@@ -271,31 +248,31 @@ public class MatchMainActivity extends AppCompatActivity {
         int roomNumber;
         @Override
         public void call(Object... args) {
-            if(Numbering.tendency(user.getHope_tendency()) == 2 && Numbering.voice(user.getHope_voice()) == 2){
-                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, 0, user.getHope_num() - 2);
+            if(Numbering.tendency(myinfo.getHope_tendency()) == 2 && Numbering.voice(myinfo.getHope_voice()) == 2){
+                roomNumber = Numbering.room(Numbering.tier(myinfo.getTier()), 0, 0, myinfo.getHope_num() - 2);
                 sendRoom(roomNumber);
-                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, 1, user.getHope_num() - 2);
+                roomNumber = Numbering.room(Numbering.tier(myinfo.getTier()), 0, 1, myinfo.getHope_num() - 2);
                 sendRoom(roomNumber);
-                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, 0, user.getHope_num() - 2);
+                roomNumber = Numbering.room(Numbering.tier(myinfo.getTier()), 1, 0, myinfo.getHope_num() - 2);
                 sendRoom(roomNumber);
-                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, 1, user.getHope_num() - 2);
-                sendRoom(roomNumber);
-            }
-            else if(Numbering.tendency(user.getHope_tendency()) == 2){
-                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
-                sendRoom(roomNumber);
-                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
+                roomNumber = Numbering.room(Numbering.tier(myinfo.getTier()), 1, 1, myinfo.getHope_num() - 2);
                 sendRoom(roomNumber);
             }
-            else if(Numbering.voice(user.getHope_voice()) == 2){
-                roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), 0, user.getHope_num() - 2);
+            else if(Numbering.tendency(myinfo.getHope_tendency()) == 2){
+                roomNumber = Numbering.room(Numbering.tier(myinfo.getTier()), 0, Numbering.voice(myinfo.getHope_voice()), myinfo.getHope_num() - 2);
                 sendRoom(roomNumber);
-                roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), 1, user.getHope_num() - 2);
+                roomNumber = Numbering.room(Numbering.tier(myinfo.getTier()), 1, Numbering.voice(myinfo.getHope_voice()), myinfo.getHope_num() - 2);
+                sendRoom(roomNumber);
+            }
+            else if(Numbering.voice(myinfo.getHope_voice()) == 2){
+                roomNumber = Numbering.room(Numbering.tier(myinfo.getTier()), Numbering.tendency(myinfo.getHope_tendency()), 0, myinfo.getHope_num() - 2);
+                sendRoom(roomNumber);
+                roomNumber = Numbering.room(Numbering.tier(myinfo.getTier()), Numbering.tendency(myinfo.getHope_tendency()), 1, myinfo.getHope_num() - 2);
                 sendRoom(roomNumber);
 
             }
             else {
-                roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
+                roomNumber = Numbering.room(Numbering.tier(myinfo.getTier()), Numbering.tendency(myinfo.getHope_tendency()), Numbering.voice(myinfo.getHope_voice()), myinfo.getHope_num() - 2);
                 sendRoom(roomNumber);
             }
         }
@@ -303,8 +280,8 @@ public class MatchMainActivity extends AppCompatActivity {
     //start match 에서 사용할
     public void sendRoom(int num){
         JsonObject userInfo = new JsonObject();
-        userInfo.addProperty("userId", user.getId());
-        userInfo.addProperty("userPosi", user.getPosition());
+        userInfo.addProperty("userId", myinfo.getId());
+        userInfo.addProperty("userPosi", myinfo.getPosition());
         userInfo.addProperty("roomNumber", num);
 
         JSONObject jsonObject = null;
@@ -330,14 +307,14 @@ public class MatchMainActivity extends AppCompatActivity {
                 while (st.hasMoreElements()) {
                     String userId_ = st.nextToken();
                     if (userId_.equals("[") || userId_.equals("]") || userId_.equals(",")) continue;
-                    if (user.getId().equals(userId_)) check++;
+                    if (myinfo.getId().equals(userId_)) check++;
                     userList.add(userId_);
                 }
                 Log.d("check", check + "");
                 Log.d("user", userList.get(0));
                 if (check == 0) return;
                 Intent intent = new Intent(getApplicationContext(), MatchRoomActivity.class);
-                intent.putExtra("userid", user.getId());
+                intent.putExtra("userid", myinfo.getId());
                 intent.putExtra("roomName", receiveData);
                 intent.putStringArrayListExtra("userList", userList);
 
@@ -375,6 +352,9 @@ public class MatchMainActivity extends AppCompatActivity {
         super.onDestroy();
         mSocket.disconnect();
     }
+
+
+    @Override
     public void onBackPressed() {
         if(ismatching == false)
             super.onBackPressed();

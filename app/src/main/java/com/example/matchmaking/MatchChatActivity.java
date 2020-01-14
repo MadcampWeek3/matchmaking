@@ -59,7 +59,7 @@ public class MatchChatActivity extends AppCompatActivity {
         });
 
         try {
-            mSocket = IO.socket("http://192.249.19.251:9980");
+            mSocket = IO.socket("http://192.249.19.251:8780");
             mSocket.connect();
             mSocket.on(Socket.EVENT_CONNECT,onChatMake);
             mSocket.on("arrivedchat:roomid", onChatArrived);

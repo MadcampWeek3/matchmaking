@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,6 +37,7 @@ public class MatchRoomActivity extends AppCompatActivity {
     private Button readybtn;
     private ArrayList<String> userlist;
     private Socket mSocket;
+    private long backKeyPressedTime = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -140,5 +142,18 @@ public class MatchRoomActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
+            backKeyPressedTime = System.currentTimeMillis();
+            Toast.makeText(getApplicationContext(), "\'뒤로\'버튼을 한번 더 누르시면 매칭이 종료됩니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
+            super.onBackPressed();
+        }
     }
 }
