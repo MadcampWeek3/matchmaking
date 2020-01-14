@@ -248,7 +248,6 @@ public class MatchMainActivity extends AppCompatActivity {
 
     //matching start 버튼 누르면 소켓에 연결하고 User 정보를 보냄
     private Emitter.Listener onMatchStart = new Emitter.Listener() {
-        int roomNumber;
         @Override
         public void call(Object... args) {
             sendRooms();
@@ -370,6 +369,7 @@ public class MatchMainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         sendUnRooms();
+        mSocket.disconnect();
     }
 
 
@@ -384,8 +384,8 @@ public class MatchMainActivity extends AppCompatActivity {
             settingButton.clearAnimation();
             match_start_btn.setText("MATCHING START");
             match_start_btn.setBackgroundColor(getResources().getColor(R.color.MatchButtonColor));
-
             sendUnRooms();
+            mSocket.disconnect();
         }
     }
 
