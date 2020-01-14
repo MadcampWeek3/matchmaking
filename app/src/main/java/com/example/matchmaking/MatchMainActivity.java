@@ -141,7 +141,7 @@ public class MatchMainActivity extends AppCompatActivity {
                 if(issetted == true) {
                     if(ismatching == false) {
                         try {
-                            mSocket = IO.socket("http://192.249.19.251:9180");
+                            mSocket = IO.socket("http://192.249.19.251:8780");
                             mSocket.connect();
                             mSocket.on(Socket.EVENT_CONNECT, onMatchStart); //Socket.EVENT_CONNECT : 연결이 성공하면 발생하는 이벤트, onConnect : callback 객체
                             mSocket.on("matchComplete", onMatchComplete);
@@ -220,7 +220,6 @@ public class MatchMainActivity extends AppCompatActivity {
 
     //matching start 버튼 누르면 소켓에 연결하고 User 정보를 보냄
     private Emitter.Listener onMatchStart = new Emitter.Listener() {
-        int roomNumber;
         @Override
         public void call(Object... args) {
             sendRooms();
@@ -342,6 +341,7 @@ public class MatchMainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         sendUnRooms();
+        mSocket.disconnect();
     }
     public void onBackPressed() {
         if(ismatching == false)
@@ -353,8 +353,8 @@ public class MatchMainActivity extends AppCompatActivity {
             settingButton.clearAnimation();
             match_start_btn.setText("MATCHING START");
             match_start_btn.setBackgroundColor(getResources().getColor(R.color.MatchButtonColor));
-
             sendUnRooms();
+            mSocket.disconnect();
         }
     }
 

@@ -26,6 +26,8 @@ import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -49,6 +51,9 @@ public class MatchRoomActivity extends AppCompatActivity {
     private ArrayList<String> userlist;
     private Socket mSocket;
     private long backKeyPressedTime = 0;
+    private Boolean isEvaluate = false;
+
+    private int count;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,7 +93,7 @@ public class MatchRoomActivity extends AppCompatActivity {
         chatrecyclerView.setAdapter(matchChatRecyclerAdapter);
 
         try {
-            mSocket = IO.socket("http://192.249.19.251:9180");
+            mSocket = IO.socket("http://192.249.19.251:8780");
             mSocket.connect();
             mSocket.on(Socket.EVENT_CONNECT, connected); //Socket.EVENT_CONNECT : 연결이 성공하면 발생하는 이벤트, onConnect : callback 객체
             mSocket.on("receiveReady", onReceiveReady);
@@ -134,22 +139,31 @@ public class MatchRoomActivity extends AppCompatActivity {
         readybtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //소켓에 신호
-                if(isready == false) {
-                    JsonObject readyInfo = new JsonObject();
-                    readyInfo.addProperty("userId", userid);
-                    readyInfo.addProperty("roomId", roomid);
+                if(isEvaluate){
+                    Intent intent = new Intent(getApplicationContext(), MatchEvaluationActivity.class);
+                    intent.putStringArrayListExtra("userlist", userlist);
+                    intent.putExtra("userid", userid);
+                    startActivity(intent);
+                    finish();
+                }
+                else {
+                    //소켓에 신호
+                    if (isready == false) {
+                        JsonObject readyInfo = new JsonObject();
+                        readyInfo.addProperty("userId", userid);
+                        readyInfo.addProperty("roomId", roomid);
 
-                    JSONObject jsonObject = null;
-                    try {
-                        jsonObject = new JSONObject(readyInfo.toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                        JSONObject jsonObject = null;
+                        try {
+                            jsonObject = new JSONObject(readyInfo.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        mSocket.emit("ready", jsonObject);
+
+                        v.animate().translationY(-500);
+                        isready = true;
                     }
-                    mSocket.emit("ready", jsonObject);
-
-                    v.animate().translationY(-500);
-                    isready = true;
                 }
             }
         });
@@ -209,6 +223,34 @@ public class MatchRoomActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            for (int i = 0; i < matchRoomRecyclerAdapter.getUserlist().size(); i++)
+                if(matchRoomRecyclerAdapter.getUserlist().get(i).getTierimg()) return;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    count = 5;
+                    final TextView tv = findViewById(R.id.match_room_phrase1);
+                    findViewById(R.id.match_room_ready_cardview).setEnabled(false);
+                    TimerTask tt = new TimerTask() {
+                        @Override
+                        public void run() {
+                            tv.setText(count + "");
+                            count--;
+                            if(count < 0){
+                                readybtn.animate().translationY(0);
+                                readybtn.setText("평가하기");
+                                isEvaluate = true;
+                                cancel();
+                            }
+                        }
+
+                    };
+                    Timer timer = new Timer();
+                    timer.schedule(tt, 0, 1000);
+
+
+                }
+            });
         }
     };
 
@@ -250,6 +292,7 @@ public class MatchRoomActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        if(isEvaluate) return;
                         Toast.makeText(getApplicationContext(), "닷지 발생", Toast.LENGTH_SHORT).show();
                         mSocket.disconnect();
                         finish();
@@ -283,6 +326,15 @@ public class MatchRoomActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        JsonObject userInfo = new JsonObject();
+        userInfo.addProperty("roomid", roomid);
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(userInfo.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mSocket.emit("leaveRoom", jsonObject);
         mSocket.disconnect();
     }
 }
