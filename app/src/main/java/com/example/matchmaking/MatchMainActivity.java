@@ -18,13 +18,17 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import io.socket.client.IO;
@@ -98,7 +102,7 @@ public class MatchMainActivity extends AppCompatActivity {
             public void onResponse(Call<User> call, Response<User> response) {
                 user = response.body();
                 Log.e("Success", user.getId());
-                nicknametxt.setText(user.getId());
+                nicknametxt.setText(user.getNickname());
                 tiertxt.setText(user.getTier());
                 positiontxt.setText(user.getPosition());
                 voicetxt.setText(user.getVoice());
@@ -148,8 +152,7 @@ public class MatchMainActivity extends AppCompatActivity {
                         settingButton.clearAnimation();
                         match_start_btn.setText("MATCHING START");
                         match_start_btn.setBackgroundColor(getResources().getColor(R.color.MatchButtonColor));
-                        int roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
-                        sendUnRoom(roomNumber);
+                        sendUnRooms();
                     }
                 }else
                     Toast.makeText(getApplicationContext(),"설정을 완료해주세요.",Toast.LENGTH_SHORT).show();
@@ -178,7 +181,7 @@ public class MatchMainActivity extends AppCompatActivity {
                     user = response.body();
                     //view update
 
-                    nicknametxt.setText(user.getId());
+                    nicknametxt.setText(user.getNickname());
                     tiertxt.setText(user.getTier());
                     positiontxt.setText(user.getPosition());
                     voicetxt.setText(user.getVoice());
@@ -206,33 +209,34 @@ public class MatchMainActivity extends AppCompatActivity {
         int roomNumber;
         @Override
         public void call(Object... args) {
-            if(Numbering.tendency(user.getHope_tendency()) == 2 && Numbering.voice(user.getHope_voice()) == 2){
-                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, 0, user.getHope_num() - 2);
-                sendRoom(roomNumber);
-                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, 1, user.getHope_num() - 2);
-                sendRoom(roomNumber);
-                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, 0, user.getHope_num() - 2);
-                sendRoom(roomNumber);
-                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, 1, user.getHope_num() - 2);
-                sendRoom(roomNumber);
-            }
-            else if(Numbering.tendency(user.getHope_tendency()) == 2){
-                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
-                sendRoom(roomNumber);
-                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
-                sendRoom(roomNumber);
-            }
-            else if(Numbering.voice(user.getHope_voice()) == 2){
-                roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), 0, user.getHope_num() - 2);
-                sendRoom(roomNumber);
-                roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), 1, user.getHope_num() - 2);
-                sendRoom(roomNumber);
-
-            }
-            else {
-                roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
-                sendRoom(roomNumber);
-            }
+            sendRooms();
+//            if(Numbering.tendency(user.getHope_tendency()) == 2 && Numbering.voice(user.getHope_voice()) == 2){
+//                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, 0, user.getHope_num() - 2);
+//                sendRoom(roomNumber);
+//                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, 1, user.getHope_num() - 2);
+//                sendRoom(roomNumber);
+//                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, 0, user.getHope_num() - 2);
+//                sendRoom(roomNumber);
+//                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, 1, user.getHope_num() - 2);
+//                sendRoom(roomNumber);
+//            }
+//            else if(Numbering.tendency(user.getHope_tendency()) == 2){
+//                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
+//                sendRoom(roomNumber);
+//                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
+//                sendRoom(roomNumber);
+//            }
+//            else if(Numbering.voice(user.getHope_voice()) == 2){
+//                roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), 0, user.getHope_num() - 2);
+//                sendRoom(roomNumber);
+//                roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), 1, user.getHope_num() - 2);
+//                sendRoom(roomNumber);
+//
+//            }
+//            else {
+//                roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
+//                sendRoom(roomNumber);
+//            }
         }
     };
     //start match 에서 사용할
@@ -244,6 +248,60 @@ public class MatchMainActivity extends AppCompatActivity {
 
         JSONObject jsonObject = null;
 
+        try {
+            jsonObject = new JSONObject(userInfo.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mSocket.emit("enterRoom", jsonObject);
+    }
+
+    public void sendRooms(){
+        int roomNumber;
+        List<Integer> roomNumbers = new ArrayList<>();
+        JsonArray jsonArray = new JsonArray();
+        if(Numbering.tendency(user.getHope_tendency()) == 2 && Numbering.voice(user.getHope_voice()) == 2){
+            roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, 0, user.getHope_num() - 2);
+            jsonArray.add(roomNumber);
+            roomNumbers.add(roomNumber);
+            roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, 1, user.getHope_num() - 2);
+            jsonArray.add(roomNumber);
+            roomNumbers.add(roomNumber);
+            roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, 0, user.getHope_num() - 2);
+            jsonArray.add(roomNumber);
+            roomNumbers.add(roomNumber);
+            roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, 1, user.getHope_num() - 2);
+            jsonArray.add(roomNumber);
+            roomNumbers.add(roomNumber);
+        }
+        else if(Numbering.tendency(user.getHope_tendency()) == 2){
+            roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
+            jsonArray.add(roomNumber);
+            roomNumbers.add(roomNumber);
+            roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
+            jsonArray.add(roomNumber);
+            roomNumbers.add(roomNumber);
+        }
+        else if(Numbering.voice(user.getHope_voice()) == 2){
+            roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), 0, user.getHope_num() - 2);
+            jsonArray.add(roomNumber);
+            roomNumbers.add(roomNumber);
+            roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), 1, user.getHope_num() - 2);
+            jsonArray.add(roomNumber);
+            roomNumbers.add(roomNumber);
+        }
+        else {
+            roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
+            jsonArray.add(roomNumber);
+            roomNumbers.add(roomNumber);
+        }
+
+        JsonObject userInfo = new JsonObject();
+        userInfo.addProperty("userId", user.getId());
+        userInfo.addProperty("userPosi", user.getPosition());
+        userInfo.addProperty("roomNumbers", roomNumbers.toString());
+
+        JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(userInfo.toString());
         } catch (JSONException e) {
@@ -264,6 +322,20 @@ public class MatchMainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         mSocket.emit("exitRoom", jsonObject);
+    }
+
+    public void sendUnRooms(){
+        int roomNumber;
+
+        roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, 0, user.getHope_num() - 2);
+        sendUnRoom(roomNumber);
+        roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, 1, user.getHope_num() - 2);
+        sendUnRoom(roomNumber);
+        roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, 0, user.getHope_num() - 2);
+        sendUnRoom(roomNumber);
+        roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, 1, user.getHope_num() - 2);
+        sendUnRoom(roomNumber);
+
         mSocket.disconnect();
     }
 
@@ -290,6 +362,7 @@ public class MatchMainActivity extends AppCompatActivity {
             intent.putExtra("roomName", receiveData);
             intent.putStringArrayListExtra("userList", userList);
 
+            sendUnRooms();
             mSocket.disconnect();
             ismatching = false;
             settingButton.clearAnimation();
@@ -304,8 +377,7 @@ public class MatchMainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        int roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
-        sendUnRoom(roomNumber);
+        sendUnRooms();
     }
     public void onBackPressed() {
         if(ismatching == false)
@@ -318,8 +390,7 @@ public class MatchMainActivity extends AppCompatActivity {
             match_start_btn.setText("MATCHING START");
             match_start_btn.setBackgroundColor(getResources().getColor(R.color.MatchButtonColor));
 
-            int roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
-            sendUnRoom(roomNumber);
+            sendUnRooms();
         }
     }
 }
