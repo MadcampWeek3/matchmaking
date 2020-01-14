@@ -2,8 +2,11 @@ package com.example.matchmaking;
 
 import org.json.JSONArray;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -26,4 +29,10 @@ public interface RetrofitInterface {
 
     @PUT("users/user/{userId}")
     Call<User> updateUser(@Path("userId")String userId, @Body User user);
+
+    @GET("chats/chat/{roomid}")
+    Call<List<MatchChatRecyclerItem>> getChats(@Path("roomid")String roomid);
+
+    @DELETE("chats/chat/{roomid}")
+    Call<String> getChatsDelete(@Path("roomid")String roomid);
 }

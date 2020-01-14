@@ -94,8 +94,11 @@ public class MatchChatRecyclerAdapter extends RecyclerView.Adapter<MatchChatRecy
         }
     }
 
-    public void additem(String text, String time,String nickname){
-        chat_list.add(new MatchChatRecyclerItem(userid,text,time,nickname));
-        notifyDataSetChanged();
+    public void additem(String userid, String text, String time,String nickname, String roomid){
+        chat_list.add(new MatchChatRecyclerItem(userid,text,time,nickname,roomid));
+    }
+
+    public ArrayList<MatchChatRecyclerItem> getChat_list() {
+        return chat_list;
     }
 }
