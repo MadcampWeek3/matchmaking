@@ -92,6 +92,7 @@ public class MatchRoomActivity extends AppCompatActivity {
             mSocket.on("receiveReady", onReceiveReady);
             mSocket.on("receiveUnReady", onReceiveUnReady);
             mSocket.on("arrivednewmsg", onChatArrived);
+            mSocket.on("leaveRoom", onLeaveRoom);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -172,26 +173,8 @@ public class MatchRoomActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-        Intent intent = new Intent(getApplicationContext(),MatchEvaluationActivity.class);
-        intent.putStringArrayListExtra("userlist",userlist);
-        startActivity(intent);
     }
 
-
-    @Override
-    public void onBackPressed() {
-        if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
-            backKeyPressedTime = System.currentTimeMillis();
-            Toast.makeText(getApplicationContext(), "\'뒤로\'버튼을 한번 더 누르시면 매칭이 종료됩니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
-            super.onBackPressed();
-        }
-    }
 
     private Emitter.Listener connected = new Emitter.Listener() {
         @Override
@@ -256,6 +239,46 @@ public class MatchRoomActivity extends AppCompatActivity {
         }
     };
 
+    private Emitter.Listener onLeaveRoom = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JsonParser jsonParsers = new JsonParser();
+            JsonObject jsonObject = (JsonObject) jsonParsers.parse(args[0] + "");
+            if(roomid.equals(jsonObject.get("roomid").getAsString())) {
+                Log.d("wer", "여기");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "닷지 발생", Toast.LENGTH_SHORT).show();
+                        mSocket.disconnect();
+                        finish();
+                    }
+                });
+            }
+        }
+    };
+
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
+            backKeyPressedTime = System.currentTimeMillis();
+            Toast.makeText(getApplicationContext(), "\'뒤로\'버튼을 한번 더 누르시면 매칭이 종료됩니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
+            JsonObject userInfo = new JsonObject();
+            userInfo.addProperty("roomid", roomid);
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = new JSONObject(userInfo.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            mSocket.emit("leaveRoom", jsonObject);
+            super.onBackPressed();
+        }
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();

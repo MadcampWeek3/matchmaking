@@ -68,7 +68,7 @@ public class MatchMainActivity extends AppCompatActivity {
 
     User user;
 
-    private final static int EVALUATION_MAX_NUM = 200;
+    private final static int EVALUATION_MAX_NUM = 20;
 
     Retrofit retrofit;
     RetrofitInterface retrofitInterface;
@@ -225,6 +225,7 @@ public class MatchMainActivity extends AppCompatActivity {
                     tiertxt.setText(user.getTier());
                     positiontxt.setText(user.getPosition());
                     voicetxt.setText(user.getVoice());
+                    aboutMetxt.setText(user.getAboutMe());
                     amusednum.setText(Integer.toString(user.getUserEval().getAmused()));
                     mentalnum.setText(Integer.toString(user.getUserEval().getMental()));
                     leadershipnum.setText(Integer.toString(user.getUserEval().getLeadership()));

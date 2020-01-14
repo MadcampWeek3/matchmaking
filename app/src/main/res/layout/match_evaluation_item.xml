@@ -28,7 +28,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        app:cardCornerRadius="15dp"
+        app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toTopOf="@+id/match_room_item_guideline_h3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,10 +43,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.39577836" />
+                app:layout_constraintGuide_percent="0.37" />
 
             <ImageButton
-                android:id="@+id/match_room_item_tier_img"
+                android:id="@+id/match_eval_tier_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -57,7 +57,7 @@
                 app:srcCompat="@drawable/platinum_1_36" />
 
             <TextView
-                android:id="@+id/match_room_item_id"
+                android:id="@+id/match_eval_nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -69,7 +69,7 @@
                 android:textSize="15sp"
                 app:layout_constraintBottom_toTopOf="@+id/match_room_item_cardview_guideline_v3"
                 app:layout_constraintEnd_toStartOf="@+id/match_room_item_cardview_guideline_v2"
-                app:layout_constraintStart_toEndOf="@+id/match_room_item_tier_img"
+                app:layout_constraintStart_toEndOf="@+id/match_eval_tier_img"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.Guideline
@@ -127,58 +127,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/notosanskr_black"
-                android:text="보이스톡"
+                android:text="지휘력"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toTopOf="@+id/match_room_item_divider1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline9"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/match_room_item_tier_write"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/notosanskr_medium"
-                android:text="플래티넘I"
-                android:textColor="@color/colorBlack"
-                android:textSize="10sp"
-                app:layout_constraintBottom_toTopOf="@+id/match_room_item_cardview_guideline_v3"
-                app:layout_constraintEnd_toStartOf="@+id/guideline7"
-                app:layout_constraintStart_toStartOf="@+id/match_room_item_cardview_guideline_v2"
-                app:layout_constraintTop_toBottomOf="@+id/match_room_item_divider1" />
-
-            <TextView
-                android:id="@+id/match_room_item_position_write"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/notosanskr_medium"
-                android:text="AD"
-                android:textColor="@color/colorBlack"
-                android:textSize="10sp"
-                app:layout_constraintBottom_toTopOf="@+id/match_room_item_cardview_guideline_v3"
-                app:layout_constraintEnd_toStartOf="@+id/guideline9"
-                app:layout_constraintStart_toStartOf="@+id/guideline7"
-                app:layout_constraintTop_toBottomOf="@+id/match_room_item_divider1" />
-
-            <TextView
-                android:id="@+id/match_room_item_voice_write"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/notosanskr_medium"
-                android:text="ON"
-                android:textColor="@color/colorBlack"
-                android:textSize="10sp"
-                app:layout_constraintBottom_toTopOf="@+id/match_room_item_cardview_guideline_v3"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/guideline9"
-                app:layout_constraintTop_toBottomOf="@+id/match_room_item_divider1" />
-
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.61" />
+                app:layout_constraintGuide_percent="0.58" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline9"
@@ -186,6 +147,39 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.78" />
+
+            <Button
+                android:id="@+id/match_eval_amused"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="SELECT"
+                android:textSize="10dp"
+                app:layout_constraintBottom_toTopOf="@+id/match_room_item_cardview_guideline_v3"
+                app:layout_constraintEnd_toStartOf="@+id/guideline7"
+                app:layout_constraintStart_toStartOf="@+id/match_room_item_cardview_guideline_v2"
+                app:layout_constraintTop_toBottomOf="@+id/match_room_item_divider1" />
+
+            <Button
+                android:id="@+id/match_eval_mental"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="SELECT"
+                android:textSize="10dp"
+                app:layout_constraintBottom_toTopOf="@+id/match_room_item_cardview_guideline_v3"
+                app:layout_constraintEnd_toStartOf="@+id/guideline9"
+                app:layout_constraintStart_toStartOf="@+id/guideline7"
+                app:layout_constraintTop_toBottomOf="@+id/match_room_item_divider1" />
+
+            <Button
+                android:id="@+id/match_eval_leadership"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="SELECT"
+                android:textSize="10dp"
+                app:layout_constraintBottom_toTopOf="@+id/match_room_item_cardview_guideline_v3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline9"
+                app:layout_constraintTop_toBottomOf="@+id/match_room_item_divider1" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
