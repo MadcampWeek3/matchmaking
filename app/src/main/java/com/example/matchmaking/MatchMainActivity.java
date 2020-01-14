@@ -115,6 +115,7 @@ public class MatchMainActivity extends AppCompatActivity {
                 tiertxt.setText(user.getTier());
                 positiontxt.setText(user.getPosition());
                 voicetxt.setText(user.getVoice());
+                aboutMetxt.setText(user.getAboutMe());
                 amusednum.setText(Integer.toString(user.getUserEval().getAmused()));
                 mentalnum.setText(Integer.toString(user.getUserEval().getMental()));
                 leadershipnum.setText(Integer.toString(user.getUserEval().getLeadership()));
@@ -140,7 +141,7 @@ public class MatchMainActivity extends AppCompatActivity {
                 if(issetted == true) {
                     if(ismatching == false) {
                         try {
-                            mSocket = IO.socket("http://192.249.19.251:9980");
+                            mSocket = IO.socket("http://192.249.19.251:9180");
                             mSocket.connect();
                             mSocket.on(Socket.EVENT_CONNECT, onMatchStart); //Socket.EVENT_CONNECT : 연결이 성공하면 발생하는 이벤트, onConnect : callback 객체
                             mSocket.on("matchComplete", onMatchComplete);
@@ -196,6 +197,7 @@ public class MatchMainActivity extends AppCompatActivity {
                     tiertxt.setText(user.getTier());
                     positiontxt.setText(user.getPosition());
                     voicetxt.setText(user.getVoice());
+                    aboutMetxt.setText(user.getAboutMe());
                     amusednum.setText(Integer.toString(user.getUserEval().getAmused()));
                     mentalnum.setText(Integer.toString(user.getUserEval().getMental()));
                     leadershipnum.setText(Integer.toString(user.getUserEval().getLeadership()));

@@ -10,6 +10,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,6 +48,7 @@ public class MatchRoomActivity extends AppCompatActivity {
     private Button readybtn;
     private ArrayList<String> userlist;
     private Socket mSocket;
+    private long backKeyPressedTime = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,6 +93,7 @@ public class MatchRoomActivity extends AppCompatActivity {
             mSocket.on(Socket.EVENT_CONNECT, connected); //Socket.EVENT_CONNECT : 연결이 성공하면 발생하는 이벤트, onConnect : callback 객체
             mSocket.on("receiveReady", onReceiveReady);
             mSocket.on("receiveUnReady", onReceiveUnReady);
+            mSocket.on("leaveRoom", onLeaveRoom);
 
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -237,6 +240,46 @@ public class MatchRoomActivity extends AppCompatActivity {
         }
     };
 
+    private Emitter.Listener onLeaveRoom = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JsonParser jsonParsers = new JsonParser();
+            JsonObject jsonObject = (JsonObject) jsonParsers.parse(args[0] + "");
+            if(roomid.equals(jsonObject.get("roomid").getAsString())) {
+                Log.d("wer", "여기");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "닷지 발생", Toast.LENGTH_SHORT).show();
+                        mSocket.disconnect();
+                        finish();
+                    }
+                });
+            }
+        }
+    };
+
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
+            backKeyPressedTime = System.currentTimeMillis();
+            Toast.makeText(getApplicationContext(), "\'뒤로\'버튼을 한번 더 누르시면 매칭이 종료됩니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
+            JsonObject userInfo = new JsonObject();
+            userInfo.addProperty("roomid", roomid);
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = new JSONObject(userInfo.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            mSocket.emit("leaveRoom", jsonObject);
+            super.onBackPressed();
+        }
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
