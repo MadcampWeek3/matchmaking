@@ -1,5 +1,6 @@
 package com.example.matchmaking;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
@@ -34,7 +35,7 @@ public class MatchUserInfoActivity extends AppCompatActivity {
     private TextView mentalnum;
     private TextView leadershipnum;
 
-    private final static int EVALUATION_MAX_NUM = 100;
+    private final static int EVALUATION_MAX_NUM = 200;
 
 
     @Override
@@ -69,6 +70,7 @@ public class MatchUserInfoActivity extends AppCompatActivity {
             public void onResponse(Call<User> call, Response<User> response) {
                 user = response.body();
 
+                tierimg.setImageDrawable(gettierimg(user.getTier()));
                 nicknametxt.setText(user.getId());
                 tiertxt.setText(user.getTier());
                 positiontxt.setText(user.getPosition());
@@ -90,4 +92,30 @@ public class MatchUserInfoActivity extends AppCompatActivity {
             }
         });
     }
+
+    public Drawable gettierimg(String tier){
+        switch (tier){
+            case "Challenger":
+                return getResources().getDrawable(R.drawable.emblem_challenger_128);
+            case "GrandMaster":
+                return getResources().getDrawable(R.drawable.emblem_grandmaster_128);
+            case "Master":
+                return getResources().getDrawable(R.drawable.emblem_master_128);
+            case "Diamond":
+                return getResources().getDrawable(R.drawable.emblem_diamond_128);
+            case "Platinum":
+                return getResources().getDrawable(R.drawable.emblem_platinum_128);
+            case "Gold":
+                return getResources().getDrawable(R.drawable.emblem_gold_128);
+            case "Silver":
+                return getResources().getDrawable(R.drawable.emblem_silver_128);
+            case "Bronze":
+                return getResources().getDrawable(R.drawable.emblem_bronze_128);
+            case "Iron":
+                return getResources().getDrawable(R.drawable.emblem_iron_128);
+            default:
+                return getResources().getDrawable(R.drawable.emblem_iron_128);
+        }
+    }
+
 }

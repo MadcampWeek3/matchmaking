@@ -55,7 +55,6 @@ public class MatchRoomActivity extends AppCompatActivity {
 
         activity = this;
 
-
         userlist = getIntent().getStringArrayListExtra("userList");
         Log.e("user: ",userlist.get(0));
         userid = getIntent().getStringExtra("userid");

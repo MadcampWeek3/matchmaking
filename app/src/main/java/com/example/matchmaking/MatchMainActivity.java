@@ -2,6 +2,7 @@ package com.example.matchmaking;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -63,7 +64,14 @@ public class MatchMainActivity extends AppCompatActivity {
     TextView mentalnum;
     TextView leadershipnum;
 
-    private final static int EVALUATION_MAX_NUM = 1000;
+    private String userid = "";
+
+    User myinfo;
+
+    private final static int EVALUATION_MAX_NUM = 200;
+
+    Retrofit retrofit;
+    RetrofitInterface retrofitInterface;
 
     private User user;
     private boolean issetted = false;
@@ -102,6 +110,7 @@ public class MatchMainActivity extends AppCompatActivity {
             public void onResponse(Call<User> call, Response<User> response) {
                 user = response.body();
                 Log.e("Success", user.getId());
+                tierimg.setImageDrawable(gettierimg(user.getTier()));
                 nicknametxt.setText(user.getNickname());
                 tiertxt.setText(user.getTier());
                 positiontxt.setText(user.getPosition());
@@ -131,7 +140,7 @@ public class MatchMainActivity extends AppCompatActivity {
                 if(issetted == true) {
                     if(ismatching == false) {
                         try {
-                            mSocket = IO.socket("http://192.249.19.251:9180");
+                            mSocket = IO.socket("http://192.249.19.251:9980");
                             mSocket.connect();
                             mSocket.on(Socket.EVENT_CONNECT, onMatchStart); //Socket.EVENT_CONNECT : 연결이 성공하면 발생하는 이벤트, onConnect : callback 객체
                             mSocket.on("matchComplete", onMatchComplete);
@@ -159,7 +168,9 @@ public class MatchMainActivity extends AppCompatActivity {
             }
         });
 
+
         ImageButton settingButton = (ImageButton) findViewById(R.id.match_main_setting);
+
         settingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -180,7 +191,7 @@ public class MatchMainActivity extends AppCompatActivity {
                 public void onResponse(Call<User> call, Response<User> response) {
                     user = response.body();
                     //view update
-
+                    tierimg.setImageDrawable(gettierimg(user.getTier()));
                     nicknametxt.setText(user.getNickname());
                     tiertxt.setText(user.getTier());
                     positiontxt.setText(user.getPosition());
@@ -192,6 +203,7 @@ public class MatchMainActivity extends AppCompatActivity {
                     runOnUiThread(new ProgressBarRunnable(progressBar1, 0, user.getUserEval().getAmused()));
                     runOnUiThread(new ProgressBarRunnable(progressBar2, 0, user.getUserEval().getMental()));
                     runOnUiThread(new ProgressBarRunnable(progressBar3, 0, user.getUserEval().getLeadership()));
+
                     issetted = true;
                 }
 
@@ -210,51 +222,8 @@ public class MatchMainActivity extends AppCompatActivity {
         @Override
         public void call(Object... args) {
             sendRooms();
-//            if(Numbering.tendency(user.getHope_tendency()) == 2 && Numbering.voice(user.getHope_voice()) == 2){
-//                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, 0, user.getHope_num() - 2);
-//                sendRoom(roomNumber);
-//                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, 1, user.getHope_num() - 2);
-//                sendRoom(roomNumber);
-//                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, 0, user.getHope_num() - 2);
-//                sendRoom(roomNumber);
-//                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, 1, user.getHope_num() - 2);
-//                sendRoom(roomNumber);
-//            }
-//            else if(Numbering.tendency(user.getHope_tendency()) == 2){
-//                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
-//                sendRoom(roomNumber);
-//                roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
-//                sendRoom(roomNumber);
-//            }
-//            else if(Numbering.voice(user.getHope_voice()) == 2){
-//                roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), 0, user.getHope_num() - 2);
-//                sendRoom(roomNumber);
-//                roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), 1, user.getHope_num() - 2);
-//                sendRoom(roomNumber);
-//
-//            }
-//            else {
-//                roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
-//                sendRoom(roomNumber);
-//            }
         }
     };
-    //start match 에서 사용할
-    public void sendRoom(int num){
-        JsonObject userInfo = new JsonObject();
-        userInfo.addProperty("userId", user.getId());
-        userInfo.addProperty("userPosi", user.getPosition());
-        userInfo.addProperty("roomNumber", num);
-
-        JSONObject jsonObject = null;
-
-        try {
-            jsonObject = new JSONObject(userInfo.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        mSocket.emit("enterRoom", jsonObject);
-    }
 
     public void sendRooms(){
         int roomNumber;
@@ -343,34 +312,37 @@ public class MatchMainActivity extends AppCompatActivity {
     private Emitter.Listener onMatchComplete = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            int check = 0;
-            final String receiveData = args[0].toString();
-            Log.d("matched", receiveData);
-            StringTokenizer st = new StringTokenizer(receiveData, "\"");
-            final ArrayList<String> userList = new ArrayList<String>();
-            while(st.hasMoreElements()){
-                String userId_ = st.nextToken();
-                if(userId_.equals("[") || userId_.equals("]") || userId_.equals(",")) continue;
-                if(user.getId().equals(userId_)) check++;
-                userList.add(userId_);
+            if(ismatching == true) {
+                int check = 0;
+                final String receiveData = args[0].toString();
+                Log.d("matched", receiveData);
+                StringTokenizer st = new StringTokenizer(receiveData, "\"");
+                final ArrayList<String> userList = new ArrayList<String>();
+                while (st.hasMoreElements()) {
+                    String userId_ = st.nextToken();
+                    if (userId_.equals("[") || userId_.equals("]") || userId_.equals(",")) continue;
+                    if (user.getId().equals(userId_)) check++;
+                    userList.add(userId_);
+                }
+                Log.d("check", check + "");
+                Log.d("user", userList.get(0));
+                if (check == 0) return;
+                Intent intent = new Intent(getApplicationContext(), MatchRoomActivity.class);
+                intent.putExtra("userid", user.getId());
+                intent.putExtra("roomName", receiveData);
+                intent.putStringArrayListExtra("userList", userList);
+
+                sendUnRooms();
+                mSocket.disconnect();
+                ismatching = false;
+                settingButton.clearAnimation();
+                settingButton.setClickable(true);
+                match_start_btn.setText("MATCHING START");
+                match_start_btn.setBackgroundColor(getResources().getColor(R.color.MatchButtonColor));
+
+                ismatching = false;
+                startActivity(intent);
             }
-            Log.d("check", check+"");
-            Log.d("user",userList.get(0));
-            if(check == 0) return;
-            Intent intent = new Intent(getApplicationContext(), MatchRoomActivity.class);
-            intent.putExtra("userid",user.getId());
-            intent.putExtra("roomName", receiveData);
-            intent.putStringArrayListExtra("userList", userList);
-
-            sendUnRooms();
-            mSocket.disconnect();
-            ismatching = false;
-            settingButton.clearAnimation();
-            settingButton.setClickable(true);
-            match_start_btn.setText("MATCHING START");
-            match_start_btn.setBackgroundColor(getResources().getColor(R.color.MatchButtonColor));
-
-            startActivity(intent);
         }
     };
 
@@ -391,6 +363,31 @@ public class MatchMainActivity extends AppCompatActivity {
             match_start_btn.setBackgroundColor(getResources().getColor(R.color.MatchButtonColor));
 
             sendUnRooms();
+        }
+    }
+
+    public Drawable gettierimg(String tier){
+        switch (tier){
+            case "Challenger":
+                return getResources().getDrawable(R.drawable.emblem_challenger_128);
+            case "GrandMaster":
+                return getResources().getDrawable(R.drawable.emblem_grandmaster_128);
+            case "Master":
+                return getResources().getDrawable(R.drawable.emblem_master_128);
+            case "Diamond":
+                return getResources().getDrawable(R.drawable.emblem_diamond_128);
+            case "Platinum":
+                return getResources().getDrawable(R.drawable.emblem_platinum_128);
+            case "Gold":
+                return getResources().getDrawable(R.drawable.emblem_gold_128);
+            case "Silver":
+                return getResources().getDrawable(R.drawable.emblem_silver_128);
+            case "Bronze":
+                return getResources().getDrawable(R.drawable.emblem_bronze_128);
+            case "Iron":
+                return getResources().getDrawable(R.drawable.emblem_iron_128);
+            default:
+                return getResources().getDrawable(R.drawable.emblem_iron_128);
         }
     }
 }
