@@ -228,40 +228,30 @@ public class MatchMainActivity extends AppCompatActivity {
     public void sendRooms(){
         int roomNumber;
         List<Integer> roomNumbers = new ArrayList<>();
-        JsonArray jsonArray = new JsonArray();
         if(Numbering.tendency(user.getHope_tendency()) == 2 && Numbering.voice(user.getHope_voice()) == 2){
             roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, 0, user.getHope_num() - 2);
-            jsonArray.add(roomNumber);
             roomNumbers.add(roomNumber);
             roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, 1, user.getHope_num() - 2);
-            jsonArray.add(roomNumber);
             roomNumbers.add(roomNumber);
             roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, 0, user.getHope_num() - 2);
-            jsonArray.add(roomNumber);
             roomNumbers.add(roomNumber);
             roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, 1, user.getHope_num() - 2);
-            jsonArray.add(roomNumber);
             roomNumbers.add(roomNumber);
         }
         else if(Numbering.tendency(user.getHope_tendency()) == 2){
             roomNumber = Numbering.room(Numbering.tier(user.getTier()), 0, Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
-            jsonArray.add(roomNumber);
             roomNumbers.add(roomNumber);
             roomNumber = Numbering.room(Numbering.tier(user.getTier()), 1, Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
-            jsonArray.add(roomNumber);
             roomNumbers.add(roomNumber);
         }
         else if(Numbering.voice(user.getHope_voice()) == 2){
             roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), 0, user.getHope_num() - 2);
-            jsonArray.add(roomNumber);
             roomNumbers.add(roomNumber);
             roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), 1, user.getHope_num() - 2);
-            jsonArray.add(roomNumber);
             roomNumbers.add(roomNumber);
         }
         else {
             roomNumber = Numbering.room(Numbering.tier(user.getTier()), Numbering.tendency(user.getHope_tendency()), Numbering.voice(user.getHope_voice()), user.getHope_num() - 2);
-            jsonArray.add(roomNumber);
             roomNumbers.add(roomNumber);
         }
 
