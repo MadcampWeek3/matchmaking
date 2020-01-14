@@ -77,7 +77,7 @@ public class MatchMainActivity extends AppCompatActivity {
     private Button match_start_btn;
     private ImageButton settingButton;
     private boolean ismatching = false;
-
+    private boolean domatched = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -168,6 +168,8 @@ public class MatchMainActivity extends AppCompatActivity {
                 if(issetted == true) {
                     if(ismatching == false) {
                         try {
+                            domatched = true;
+
                             mSocket = IO.socket("http://192.249.19.251:8780");
                             mSocket.connect();
                             mSocket.on(Socket.EVENT_CONNECT, onMatchStart); //Socket.EVENT_CONNECT : 연결이 성공하면 발생하는 이벤트, onConnect : callback 객체
@@ -368,8 +370,10 @@ public class MatchMainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        sendUnRooms();
-        mSocket.disconnect();
+        if(domatched) {
+            sendUnRooms();
+            mSocket.disconnect();
+        }
     }
 
 
