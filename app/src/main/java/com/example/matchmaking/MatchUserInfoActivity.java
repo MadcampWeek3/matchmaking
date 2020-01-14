@@ -35,7 +35,7 @@ public class MatchUserInfoActivity extends AppCompatActivity {
     private TextView mentalnum;
     private TextView leadershipnum;
 
-    private final static int EVALUATION_MAX_NUM = 20;
+    private final static int EVALUATION_MAX_NUM = 200;
 
 
     @Override

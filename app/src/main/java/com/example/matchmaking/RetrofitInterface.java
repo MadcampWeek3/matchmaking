@@ -34,5 +34,5 @@ public interface RetrofitInterface {
     Call<List<MatchChatRecyclerItem>> getChats(@Path("roomid")String roomid);
 
     @DELETE("chats/chat/{roomid}")
-    Call<String> getChatsDelete(@Path("roomid")String roomid);
+    Call<String> deleteChats(@Path("roomid")String roomid);
 }

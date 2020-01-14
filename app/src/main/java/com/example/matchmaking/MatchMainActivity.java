@@ -68,7 +68,7 @@ public class MatchMainActivity extends AppCompatActivity {
 
     User user;
 
-    private final static int EVALUATION_MAX_NUM = 20;
+    private final static int EVALUATION_MAX_NUM = 200;
 
     Retrofit retrofit;
     RetrofitInterface retrofitInterface;
@@ -418,8 +418,24 @@ public class MatchMainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        amusednum.invalidate();
-        mentalnum.invalidate();
-        leadershipnum.invalidate();
+        RetrofitHelper.getApiService().receiveUser(userid).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                user = response.body();
+
+                amusednum.setText(Integer.toString(user.getUserEval().getAmused()));
+                mentalnum.setText(Integer.toString(user.getUserEval().getMental()));
+                leadershipnum.setText(Integer.toString(user.getUserEval().getLeadership()));
+
+                runOnUiThread(new ProgressBarRunnable(progressBar1, 0, user.getUserEval().getAmused()));
+                runOnUiThread(new ProgressBarRunnable(progressBar2, 0, user.getUserEval().getMental()));
+                runOnUiThread(new ProgressBarRunnable(progressBar3, 0, user.getUserEval().getLeadership()));
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.e("error resume",t.getMessage());
+            }
+        });
     }
 }

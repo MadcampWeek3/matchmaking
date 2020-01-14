@@ -52,7 +52,7 @@ public class MatchRoomActivity extends AppCompatActivity {
     private Socket mSocket;
     private long backKeyPressedTime = 0;
     private Boolean isEvaluate = false;
-
+    boolean isout = false;
     private int count;
 
     @Override
@@ -141,8 +141,19 @@ public class MatchRoomActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), MatchEvaluationActivity.class);
                     intent.putStringArrayListExtra("userlist", userlist);
                     intent.putExtra("userid", userid);
-                    startActivity(intent);
-                    finish();
+                    RetrofitHelper.getApiService().deleteChats(roomid).enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            Log.e("deleteOK",response.body());
+                            startActivity(intent);
+                            finish();
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+                            Log.e("deleteFailed",t.getMessage());
+                        }
+                    });
                 }
                 else {
                     //소켓에 신호
@@ -303,6 +314,7 @@ public class MatchRoomActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
         if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
             backKeyPressedTime = System.currentTimeMillis();
             Toast.makeText(getApplicationContext(), "\'뒤로\'버튼을 한번 더 누르시면 매칭이 종료됩니다.", Toast.LENGTH_SHORT).show();
@@ -319,7 +331,19 @@ public class MatchRoomActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             mSocket.emit("leaveRoom", jsonObject);
-            super.onBackPressed();
+            RetrofitHelper.getApiService().deleteChats(roomid).enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    Log.e("deleteOK",response.body());
+                    isout = true;
+                    finish();
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Log.e("deleteFailed",t.getMessage());
+                }
+            });
         }
     }
     @Override

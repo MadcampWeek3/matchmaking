@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="94dp" />
+        app:layout_constraintGuide_begin="108dp" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/match_room_item_personal_cardview"
@@ -152,8 +152,7 @@
                 android:id="@+id/match_eval_amused"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:text="SELECT"
-                android:textSize="10dp"
+                android:background="@drawable/amused"
                 app:layout_constraintBottom_toTopOf="@+id/match_room_item_cardview_guideline_v3"
                 app:layout_constraintEnd_toStartOf="@+id/guideline7"
                 app:layout_constraintStart_toStartOf="@+id/match_room_item_cardview_guideline_v2"
@@ -163,8 +162,7 @@
                 android:id="@+id/match_eval_mental"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:text="SELECT"
-                android:textSize="10dp"
+                android:background="@drawable/mental"
                 app:layout_constraintBottom_toTopOf="@+id/match_room_item_cardview_guideline_v3"
                 app:layout_constraintEnd_toStartOf="@+id/guideline9"
                 app:layout_constraintStart_toStartOf="@+id/guideline7"
@@ -174,7 +172,7 @@
                 android:id="@+id/match_eval_leadership"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:text="SELECT"
+                android:background="@drawable/leader"
                 android:textSize="10dp"
                 app:layout_constraintBottom_toTopOf="@+id/match_room_item_cardview_guideline_v3"
                 app:layout_constraintEnd_toEndOf="parent"
