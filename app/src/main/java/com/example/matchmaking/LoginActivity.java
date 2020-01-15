@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
                         String response_ = response.body();
-                        if(response_.equals("성공")){
+                        if(response_ != null && response_.equals("성공")){
                             Intent intent = new Intent(getApplicationContext(), MatchMainActivity.class);
                             intent.putExtra("userId",loginId.getText().toString());
                             startActivity(intent);

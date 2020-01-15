@@ -47,7 +47,6 @@ public class MatchEvaluationRecyclerAdapter extends RecyclerView.Adapter<MatchEv
 
     @Override
     public void onBindViewHolder(@NonNull MatchEvaluationRecyclerAdapter.ViewHolder holder, int position) {
-        holder.tierimg.setImageDrawable(gettierimg(recyclerItems.get(position).getTier()));
         holder.nickname.setText(recyclerItems.get(position).getNickname());
         holder.amusedbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,7 +121,6 @@ public class MatchEvaluationRecyclerAdapter extends RecyclerView.Adapter<MatchEv
         Button mentalbtn;
         Button leadershipbtn;
         TextView nickname;
-        ImageView tierimg;
 
         ViewHolder(View itemView){
             super(itemView);
@@ -130,7 +128,6 @@ public class MatchEvaluationRecyclerAdapter extends RecyclerView.Adapter<MatchEv
             amusedbtn = itemView.findViewById(R.id.match_eval_amused);
             mentalbtn = itemView.findViewById(R.id.match_eval_mental);
             leadershipbtn = itemView.findViewById(R.id.match_eval_leadership);
-            tierimg = itemView.findViewById(R.id.match_eval_tier_img);
         }
     }
 
